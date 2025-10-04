@@ -2,77 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-
-// Types
-interface SpendingCategory {
-  id: string;
-  icon: string;
-  name: string;
-  currentAmount: number;
-  maxAmount: number;
-  currency?: string;
-  quickIncrements: number[];
-  savingsMessage?: {
-    amount: number;
-    increaseBy: number;
-  };
-}
-
-interface SpendingCategoriesConfig {
-  categories: SpendingCategory[];
-}
-
-// JSON Configuration
-const spendingData: SpendingCategoriesConfig = {
-  categories: [
-    {
-      id: "travel",
-      icon: "travel",
-      name: "Travel",
-      currentAmount: 6000,
-      maxAmount: 15000,
-      currency: "₹",
-      quickIncrements: [1000, 5000],
-      savingsMessage: {
-        amount: 5000,
-        increaseBy: 1000,
-      },
-    },
-    {
-      id: "shopping",
-      icon: "shopping",
-      name: "Shopping",
-      currentAmount: 8000,
-      maxAmount: 20000,
-      currency: "₹",
-      quickIncrements: [1000, 5000],
-      savingsMessage: {
-        amount: 4500,
-        increaseBy: 2000,
-      },
-    },
-    {
-      id: "fuel",
-      icon: "fuel",
-      name: "Fuel",
-      currentAmount: 4000,
-      maxAmount: 10000,
-      currency: "₹",
-      quickIncrements: [1000, 5000],
-      savingsMessage: {
-        amount: 3000,
-        increaseBy: 1500,
-      },
-    },
-  ],
-};
-
-// Icon path mapping
-const iconMap = {
-  travel: "/spends/airplane.svg",
-  shopping: "/spends/bag.svg",
-  fuel: "/spends/fuel.svg",
-};
+import type {
+  SpendingCategoryCardProps,
+  SpendingCategoriesProps,
+} from "./SpendingCards.types";
+import { spendingData, iconMap } from "./SpendingCards.data";
 
 const ChevronDownIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
@@ -92,27 +26,7 @@ const ChevronDownIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-const SparkleIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg
-    className={className}
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-  >
-    <path
-      d="M12 3L14 10L21 12L14 14L12 21L10 14L3 12L10 10L12 3Z"
-      fill="currentColor"
-    />
-  </svg>
-);
-
 // Spending Category Card Component
-interface SpendingCategoryCardProps {
-  category: SpendingCategory;
-  onAmountChange?: (amount: number) => void;
-}
-
 const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
   category,
   onAmountChange,
@@ -301,7 +215,7 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
               width={24}
               height={24}
               className="flex-shrink-0 mt-1"
-              style={{ width: '24px', height: '24px' }}
+              style={{ width: "24px", height: "24px" }}
             />
             <p className="text-white text-body-sm">
               Save{" "}
@@ -323,13 +237,6 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
 };
 
 // Main Component
-interface SpendingCategoriesProps {
-  data?: SpendingCategoriesConfig;
-  onCategoryChange?: (categories: string[]) => void;
-  onTotalChange?: (total: number) => void;
-  onCategorySpendsChange?: (categorySpends: { [key: string]: number }) => void;
-}
-
 const SpendingCards: React.FC<SpendingCategoriesProps> = ({
   data = spendingData,
   onCategoryChange,
@@ -337,7 +244,10 @@ const SpendingCards: React.FC<SpendingCategoriesProps> = ({
   onCategorySpendsChange,
 }) => {
   const [amounts, setAmounts] = React.useState<{ [key: string]: number }>(
-    data.categories.reduce((acc, cat) => ({ ...acc, [cat.id]: cat.currentAmount }), {})
+    data.categories.reduce(
+      (acc, cat) => ({ ...acc, [cat.id]: cat.currentAmount }),
+      {}
+    )
   );
 
   React.useEffect(() => {
@@ -347,7 +257,7 @@ const SpendingCards: React.FC<SpendingCategoriesProps> = ({
 
     // Get categories with amounts > 0
     const activeCategories = Object.entries(amounts)
-      .filter(([_, amount]) => amount > 0)
+      .filter(([, amount]) => amount > 0)
       .map(([id]) => id);
     onCategoryChange?.(activeCategories);
 
@@ -356,7 +266,7 @@ const SpendingCards: React.FC<SpendingCategoriesProps> = ({
   }, [amounts, onCategoryChange, onTotalChange, onCategorySpendsChange]);
 
   const handleAmountChange = (categoryId: string, newAmount: number) => {
-    setAmounts(prev => ({ ...prev, [categoryId]: newAmount }));
+    setAmounts((prev) => ({ ...prev, [categoryId]: newAmount }));
   };
 
   return (

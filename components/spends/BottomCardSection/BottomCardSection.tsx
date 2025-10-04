@@ -3,243 +3,16 @@
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import SavingsBreakdownCard from "./SpendingBreakdown";
+import SavingsBreakdownCard from "../SpendingBreakdown";
 import Button from "@/components/ui/Button";
+import type { BottomCardSectionProps } from "./BottomCardSection.types";
+import { creditCards } from "./BottomCardSection.data";
 
-// Credit Card Interface
-interface CreditCard {
-  id: string;
-  name: string;
-  bank: string;
-  image: string;
-  categories: string[];
-  cashback: number;
-  annualFee: number;
-  joiningBonus: number;
-}
-
-// Dummy Credit Card Data
-const creditCards: CreditCard[] = [
-  // HDFC Bank Cards
-  {
-    id: "hdfc1",
-    name: "HDFC Regalia",
-    bank: "HDFC Bank",
-    image: "/cards/hdfc-regalia.png",
-    categories: ["travel", "shopping"],
-    cashback: 4,
-    annualFee: 2500,
-    joiningBonus: 5000,
-  },
-  {
-    id: "hdfc2",
-    name: "HDFC Millennia",
-    bank: "HDFC Bank",
-    image: "/cards/hdfc-millennia.png",
-    categories: ["shopping", "food"],
-    cashback: 5,
-    annualFee: 1000,
-    joiningBonus: 1000,
-  },
-  {
-    id: "hdfc3",
-    name: "HDFC Diners Club",
-    bank: "HDFC Bank",
-    image: "/cards/hdfc-diners.png",
-    categories: ["travel", "fuel"],
-    cashback: 3.3,
-    annualFee: 10000,
-    joiningBonus: 10000,
-  },
-  {
-    id: "hdfc4",
-    name: "HDFC MoneyBack",
-    bank: "HDFC Bank",
-    image: "/cards/hdfc-moneyback.png",
-    categories: ["fuel", "shopping"],
-    cashback: 2,
-    annualFee: 500,
-    joiningBonus: 500,
-  },
-  {
-    id: "hdfc5",
-    name: "HDFC Infinia",
-    bank: "HDFC Bank",
-    image: "/cards/hdfc-infinia.png",
-    categories: ["travel", "shopping", "food"],
-    cashback: 3.3,
-    annualFee: 12500,
-    joiningBonus: 12500,
-  },
-
-  // SBI Cards
-  {
-    id: "sbi1",
-    name: "SBI Cashback",
-    bank: "SBI Card",
-    image: "/cards/sbi-cashback.png",
-    categories: ["shopping", "fuel"],
-    cashback: 5,
-    annualFee: 999,
-    joiningBonus: 2000,
-  },
-  {
-    id: "sbi2",
-    name: "SBI SimplyCLICK",
-    bank: "SBI Card",
-    image: "/cards/sbi-click.png",
-    categories: ["shopping", "food"],
-    cashback: 10,
-    annualFee: 499,
-    joiningBonus: 500,
-  },
-  {
-    id: "sbi3",
-    name: "SBI Vistara",
-    bank: "SBI Card",
-    image: "/cards/sbi-vistara.png",
-    categories: ["travel"],
-    cashback: 4,
-    annualFee: 3000,
-    joiningBonus: 3000,
-  },
-  {
-    id: "sbi4",
-    name: "SBI Elite",
-    bank: "SBI Card",
-    image: "/cards/sbi-elite.png",
-    categories: ["travel", "shopping"],
-    cashback: 3,
-    annualFee: 4999,
-    joiningBonus: 5000,
-  },
-  {
-    id: "sbi5",
-    name: "SBI BPCL",
-    bank: "SBI Card",
-    image: "/cards/sbi-bpcl.png",
-    categories: ["fuel"],
-    cashback: 7,
-    annualFee: 0,
-    joiningBonus: 0,
-  },
-
-  // ICICI Bank Cards
-  {
-    id: "icici1",
-    name: "ICICI Amazon Pay",
-    bank: "ICICI Bank",
-    image: "/cards/icici-amazon.png",
-    categories: ["shopping"],
-    cashback: 5,
-    annualFee: 500,
-    joiningBonus: 1000,
-  },
-  {
-    id: "icici2",
-    name: "ICICI Sapphiro",
-    bank: "ICICI Bank",
-    image: "/cards/icici-sapphiro.png",
-    categories: ["travel", "shopping", "food"],
-    cashback: 3.3,
-    annualFee: 3500,
-    joiningBonus: 3500,
-  },
-  {
-    id: "icici3",
-    name: "ICICI HPCL",
-    bank: "ICICI Bank",
-    image: "/cards/icici-hpcl.png",
-    categories: ["fuel"],
-    cashback: 5,
-    annualFee: 500,
-    joiningBonus: 500,
-  },
-  {
-    id: "icici4",
-    name: "ICICI Coral",
-    bank: "ICICI Bank",
-    image: "/cards/icici-coral.png",
-    categories: ["shopping", "food"],
-    cashback: 2,
-    annualFee: 500,
-    joiningBonus: 2000,
-  },
-  {
-    id: "icici5",
-    name: "ICICI Emeralde",
-    bank: "ICICI Bank",
-    image: "/cards/icici-emeralde.png",
-    categories: ["travel", "shopping"],
-    cashback: 4,
-    annualFee: 12000,
-    joiningBonus: 12000,
-  },
-
-  // Axis Bank Cards
-  {
-    id: "axis1",
-    name: "Axis Flipkart",
-    bank: "Axis Bank",
-    image: "/cards/axis-flipkart.png",
-    categories: ["shopping"],
-    cashback: 4,
-    annualFee: 500,
-    joiningBonus: 500,
-  },
-  {
-    id: "axis2",
-    name: "Axis Magnus",
-    bank: "Axis Bank",
-    image: "/cards/axis-magnus.png",
-    categories: ["travel", "shopping", "food"],
-    cashback: 4.8,
-    annualFee: 12500,
-    joiningBonus: 25000,
-  },
-  {
-    id: "axis3",
-    name: "Axis Vistara",
-    bank: "Axis Bank",
-    image: "/cards/axis-vistara.png",
-    categories: ["travel"],
-    cashback: 4,
-    annualFee: 1500,
-    joiningBonus: 1500,
-  },
-  {
-    id: "axis4",
-    name: "Axis ACE",
-    bank: "Axis Bank",
-    image: "/cards/axis-ace.png",
-    categories: ["shopping", "food", "fuel"],
-    cashback: 2,
-    annualFee: 0,
-    joiningBonus: 0,
-  },
-  {
-    id: "axis5",
-    name: "Axis Select",
-    bank: "Axis Bank",
-    image: "/cards/axis-select.png",
-    categories: ["shopping", "travel"],
-    cashback: 2,
-    annualFee: 3000,
-    joiningBonus: 3000,
-  },
-];
-
-interface BottomCardSectionProps {
-  selectedCategories: string[];
-  totalSpends: number;
-  categorySpends?: { [key: string]: number };
-}
-
-export default function BottomCardSection({
+const BottomCardSection: React.FC<BottomCardSectionProps> = ({
   selectedCategories,
   totalSpends,
   categorySpends = {},
-}: BottomCardSectionProps) {
+}) => {
   const router = useRouter();
   const [height, setHeight] = useState(195);
   const [startY, setStartY] = useState(0);
@@ -377,17 +150,7 @@ export default function BottomCardSection({
               className="transform rotate-90"
             />
           </div>
-          <p
-            className="text-white/60 px-4 mb-3"
-            style={{
-              fontFamily:
-                "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-              fontWeight: 400,
-              fontSize: "13px",
-              lineHeight: "18px",
-              letterSpacing: "0.01em",
-            }}
-          >
+          <p className="text-white/60 px-4 mb-3 text-body-sm">
             {recommendedCards.length} recommended cards
           </p>
 
@@ -399,12 +162,13 @@ export default function BottomCardSection({
                 className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
                 onScroll={(e) => {
                   const scrollLeft = e.currentTarget.scrollLeft;
-                  const cardWidth = e.currentTarget.scrollWidth / recommendedCards.length;
+                  const cardWidth =
+                    e.currentTarget.scrollWidth / recommendedCards.length;
                   const index = Math.round(scrollLeft / cardWidth);
                   setCurrentCardIndex(index);
                 }}
               >
-                {recommendedCards.map((card, index) => (
+                {recommendedCards.map((card) => (
                   <div
                     key={card.id}
                     className="flex-shrink-0 snap-center"
@@ -437,29 +201,11 @@ export default function BottomCardSection({
                     {/* Card Details */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex-1">
-                        <h4
-                          className="text-white mb-1"
-                          style={{
-                            fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-                            fontWeight: 400,
-                            fontSize: "18px",
-                            lineHeight: "22px",
-                          }}
-                        >
+                        <h4 className="text-white mb-1 text-card-name">
                           {card.name}
                         </h4>
                         <div className="flex items-center gap-2">
-                          <span
-                            className="text-white"
-                            style={{
-                              fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-                              fontWeight: 600,
-                              fontSize: "14px",
-                              lineHeight: "18px",
-                            }}
-                          >
-                            4.5
-                          </span>
+                          <span className="text-white text-rating">4.5</span>
                           <div className="flex items-center gap-0.5">
                             {[...Array(5)].map((_, i) => (
                               <svg
@@ -474,32 +220,20 @@ export default function BottomCardSection({
                             ))}
                           </div>
                           <span
-                            style={{
-                              fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-                              fontWeight: 400,
-                              fontSize: "12px",
-                              lineHeight: "16px",
-                              color: "#999999",
-                            }}
+                            className="text-reviews"
+                            style={{ color: "#999999" }}
                           >
                             (2,847 reviews)
                           </span>
                         </div>
                       </div>
                       <button
-                        style={{
-                          fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-                          fontWeight: 400,
-                          fontSize: "14px",
-                          lineHeight: "18px",
-                          color: "#4A90E2",
-                          textDecoration: "underline",
-                        }}
+                        className="text-link underline"
+                        style={{ color: "#4A90E2" }}
                       >
                         View Details
                       </button>
                     </div>
-
                   </div>
                 ))}
               </div>
@@ -542,4 +276,6 @@ export default function BottomCardSection({
       )}
     </div>
   );
-}
+};
+
+export default BottomCardSection;

@@ -8,19 +8,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  variant = "primary",
   fullWidth = false,
   className = "",
   ...props
 }) => {
   return (
     <button
-      className={`rounded-full text-white text-center ${fullWidth ? "w-full" : ""} ${className}`}
+      className={`rounded-full text-white text-center text-button-md ${
+        fullWidth ? "w-full" : ""
+      } ${className}`}
       style={{
-        fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-        fontWeight: 600,
-        fontSize: "16px",
-        lineHeight: "20px",
         background: "rgba(30, 87, 82, 1)",
         border: "0.25px solid transparent",
         borderImage:

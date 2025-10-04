@@ -2,25 +2,12 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-
-// Types
-interface SavingsCategory {
-  id: string;
-  icon: string;
-  name: string;
-  spent: number;
-  saved: number;
-  percentage: number;
-}
-
-interface SavingsBreakdownConfig {
-  heading: string;
-  categories: SavingsCategory[];
-  totalSpent: number;
-  totalSavings: number;
-  averagePercentage: number;
-  currency?: string;
-}
+import type {
+  SavingsCategory,
+  SavingsBreakdownConfig,
+  CategoryRowProps,
+  SavingsBreakdownCardProps,
+} from "./SpendingBreakdown.types";
 
 // Icon path mapping
 const iconMap = {
@@ -30,35 +17,26 @@ const iconMap = {
 };
 
 // Category Row Component
-interface CategoryRowProps {
-  category: SavingsCategory;
-  currency: string;
-}
-
 const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
   const iconPath =
     iconMap[category.icon as keyof typeof iconMap] || iconMap.shopping;
 
   return (
-    <div className="flex items-center justify-between py-4 border-b border-white/10 last:border-b-0">
+    <div className="flex items-center justify-between py-4">
       {/* Left Side - Icon and Name */}
       <div className="flex items-center gap-3 flex-1">
         <div
           className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
           style={{ background: "rgba(255, 255, 255, 0.08)" }}
         >
-          <Image
-            src={iconPath}
-            alt={category.name}
-            width={28}
-            height={28}
-          />
+          <Image src={iconPath} alt={category.name} width={28} height={28} />
         </div>
         <div className="flex-1 min-w-0">
           <h3
             className="text-white mb-1"
             style={{
-              fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
+              fontFamily:
+                "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
               fontWeight: 400,
               fontSize: "17px",
               lineHeight: "24px",
@@ -69,7 +47,8 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
           </h3>
           <p
             style={{
-              fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
+              fontFamily:
+                "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
               fontWeight: 400,
               fontSize: "13px",
               lineHeight: "18px",
@@ -88,7 +67,8 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
         <div
           className="text-white mb-1"
           style={{
-            fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
+            fontFamily:
+              "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
             fontWeight: 400,
             fontSize: "17px",
             lineHeight: "24px",
@@ -100,7 +80,8 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
         </div>
         <div
           style={{
-            fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
+            fontFamily:
+              "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
             fontWeight: 400,
             fontSize: "13px",
             lineHeight: "18px",
@@ -117,13 +98,6 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
 };
 
 // Main Savings Breakdown Card Component
-interface SavingsBreakdownCardProps {
-  totalSpends: number;
-  avgCashback: number;
-  categorySpends?: { [key: string]: number };
-  onExpand?: () => void;
-}
-
 const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
   totalSpends,
   avgCashback,
@@ -135,7 +109,7 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
 
   // Calculate dynamic savings breakdown
   const categories: SavingsCategory[] = Object.entries(categorySpends)
-    .filter(([_, amount]) => amount > 0)
+    .filter(([, amount]) => amount > 0)
     .map(([id, spent]) => {
       const categoryName = id.charAt(0).toUpperCase() + id.slice(1);
       const saved = Math.round((spent * avgCashback) / 100);
@@ -170,37 +144,22 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
       <div
         className="relative rounded-2xl p-6"
         style={{
-          background: "linear-gradient(169.98deg, #353F54 27.98%, #222834 81.2%)",
+          background:
+            "linear-gradient(169.98deg, #353F54 27.98%, #222834 81.2%)",
           border: "0.5px solid",
-          borderImageSource: "linear-gradient(135.66deg, rgba(255, 255, 255, 0.18) -23.01%, rgba(16, 26, 45, 0.6) 40.85%, rgba(255, 255, 255, 0.18) 104.72%)",
+          borderImageSource:
+            "linear-gradient(135.66deg, rgba(255, 255, 255, 0.18) -23.01%, rgba(16, 26, 45, 0.6) 40.85%, rgba(255, 255, 255, 0.18) 104.72%)",
           borderImageSlice: 1,
           boxShadow: "1px 8px 10px 0px #0000001F",
         }}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2
-            className="text-white"
-            style={{
-              fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-              fontWeight: 600,
-              fontSize: "15px",
-              lineHeight: "20px",
-              letterSpacing: "-0.002em",
-            }}
-          >
-            {data.heading}
-          </h2>
+          <h2 className="text-white text-breakdown-heading">{data.heading}</h2>
           <button
             onClick={handleExpand}
-            className="transition-colors"
+            className="transition-colors text-expand-link underline"
             style={{
-              fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-              fontWeight: 400,
-              fontSize: "11px",
-              lineHeight: "14px",
-              letterSpacing: "0.02em",
-              textDecoration: "underline",
               textDecorationStyle: "dotted",
               color: "#999999",
             }}
@@ -210,23 +169,25 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
         </div>
 
         {/* Categories */}
-        <div className="mb-6">
-          {data.categories.map((category) => (
-            <CategoryRow
-              key={category.id}
-              category={category}
-              currency={currency}
-            />
+        <div className="mb-6 space-y-4">
+          {data.categories.map((category, index) => (
+            <React.Fragment key={category.id}>
+              <CategoryRow category={category} currency={currency} />
+              {index < data.categories.length - 1 && (
+                <div className="h-px bg-white/10" />
+              )}
+            </React.Fragment>
           ))}
         </div>
 
         {/* Total Savings */}
-        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+        <div className="flex items-center justify-between pt-6 border-t border-white/10">
           <div className="flex-1">
             <h3
               className="text-white mb-1"
               style={{
-                fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
+                fontFamily:
+                  "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
                 fontWeight: 400,
                 fontSize: "17px",
                 lineHeight: "24px",
@@ -237,7 +198,8 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
             </h3>
             <p
               style={{
-                fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
+                fontFamily:
+                  "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
                 fontWeight: 400,
                 fontSize: "13px",
                 lineHeight: "18px",
@@ -253,7 +215,8 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
             <div
               className="mb-1"
               style={{
-                fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
+                fontFamily:
+                  "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
                 fontWeight: 600,
                 fontSize: "20px",
                 lineHeight: "26px",
@@ -266,7 +229,8 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
             </div>
             <div
               style={{
-                fontFamily: "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
+                fontFamily:
+                  "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
                 fontWeight: 400,
                 fontSize: "13px",
                 lineHeight: "18px",
