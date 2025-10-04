@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* SF Pro Text Font Family */
+@font-face {
+  font-family: "SF Pro Text";
+  src: url("/fonts/SF-Pro-Text-Regular.otf") format("opentype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -8,8 +17,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,12 +29,11 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "SF Pro Text", sans-serif;
 }
 
 /* Typography Utility Classes */
 .text-heading-lg {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   font-size: 28px;
   line-height: 34px;
@@ -35,7 +41,6 @@ body {
 }
 
 .text-body-sm {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 13px;
   line-height: 18px;
@@ -43,19 +48,16 @@ body {
 }
 
 .text-label-md {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 500;
   font-size: 16px;
 }
 
 .text-button-lg {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   font-size: 18px;
 }
 
 .text-caption-xs {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 11px;
   line-height: 14px;
@@ -63,7 +65,6 @@ body {
 }
 
 .text-category-md {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 17px;
   line-height: 24px;
@@ -71,7 +72,6 @@ body {
 }
 
 .text-amount-md {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 500;
   font-size: 17px;
   line-height: 22px;
@@ -79,7 +79,6 @@ body {
 }
 
 .text-expand-sm {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 13px;
   line-height: 18px;
@@ -88,7 +87,6 @@ body {
 }
 
 .text-increment-btn {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   font-size: 13px;
   line-height: 18px;
@@ -97,7 +95,6 @@ body {
 }
 
 .text-total-spends {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 15px;
   line-height: 20px;
@@ -107,7 +104,6 @@ body {
 }
 
 .text-total-amount {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 700;
   font-size: 17px;
   line-height: 22px;
@@ -117,7 +113,6 @@ body {
 }
 
 .text-save-monthly {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   font-size: 17px;
   line-height: 22px;
@@ -127,7 +122,6 @@ body {
 }
 
 .text-save-amount {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 800;
   font-size: 17px;
   line-height: 22px;
@@ -137,35 +131,30 @@ body {
 }
 
 .text-card-name {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 18px;
   line-height: 22px;
 }
 
 .text-rating {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   font-size: 14px;
   line-height: 18px;
 }
 
 .text-reviews {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;
 }
 
 .text-link {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 14px;
   line-height: 18px;
 }
 
 .text-breakdown-heading {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   font-size: 15px;
   line-height: 20px;
@@ -173,7 +162,6 @@ body {
 }
 
 .text-expand-link {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   font-size: 11px;
   line-height: 14px;
@@ -181,14 +169,12 @@ body {
 }
 
 .text-button-md {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   font-size: 16px;
   line-height: 20px;
 }
 
 .text-page-title {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   font-size: 20px;
   line-height: 26px;
@@ -196,11 +182,171 @@ body {
 }
 
 .text-card-title {
-  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   font-size: 17px;
   line-height: 22px;
   letter-spacing: -0.003em;
+}
+
+.text-eligibility-heading {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.002em;
+}
+
+.text-eligibility-value {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: 0%;
+}
+
+.text-eligibility-label {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+}
+
+/* Breakdown Card Typography */
+.text-breakdown-category {
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 24px;
+  letter-spacing: 0%;
+}
+
+.text-breakdown-spent {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+}
+
+.text-breakdown-saved {
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 24px;
+  letter-spacing: 0%;
+}
+
+.text-breakdown-percentage {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+  text-align: right;
+}
+
+.text-breakdown-total-savings {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 26px;
+  letter-spacing: -0.004em;
+}
+
+/* Card Stats Typography */
+.text-card-stat-label {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+}
+
+.text-card-stat-value {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.003em;
+}
+
+/* Savings Card Typography */
+.text-savings-heading {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+}
+
+.text-savings-edit {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.text-savings-amount-large {
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 34px;
+  letter-spacing: -0.005em;
+}
+
+.text-savings-subtitle {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+}
+
+.text-savings-category {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+}
+
+.text-savings-spent {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+}
+
+.text-savings-saved {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+}
+
+.text-savings-percentage {
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+  text-align: right;
+}
+
+.text-savings-label {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+}
+
+.text-savings-value {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+}
+
+.text-savings-net-label {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0%;
+}
+
+.text-savings-net-value {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 26px;
+  letter-spacing: -0.004em;
 }
 
 /* Hide scrollbar for carousel */

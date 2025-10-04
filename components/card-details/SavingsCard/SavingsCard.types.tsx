@@ -23,6 +23,7 @@ export interface SummaryRowProps {
   currency?: string;
   isNegative?: boolean;
   highlight?: boolean;
+  showDivider?: boolean;
 }
 
 export interface SavingsCardProps {

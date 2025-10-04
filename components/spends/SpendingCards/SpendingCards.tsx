@@ -165,7 +165,7 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
       <div className="flex items-center justify-between gap-4">
         <div className="flex gap-2 sm:gap-3">
           {category.quickIncrements.map((increment) => (
-            <button
+            <div
               key={increment}
               onClick={() => handleQuickIncrement(increment)}
               className="rounded-lg text-white text-increment-btn transition-all hover:opacity-80"
@@ -180,11 +180,11 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
             >
               + {category.currency}
               {(increment / 1000).toFixed(0)}k
-            </button>
+            </div>
           ))}
         </div>
 
-        <button
+        <div
           onClick={() => setIsExpanded(!isExpanded)}
           className="flex items-center gap-2 transition-colors px-3 sm:px-4 py-2"
           style={{ color: "#999999" }}
@@ -195,7 +195,7 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
               isExpanded ? "rotate-180" : ""
             }`}
           />
-        </button>
+        </div>
       </div>
 
       {/* Expanded Content */}

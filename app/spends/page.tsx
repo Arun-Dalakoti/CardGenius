@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Head from "next/head";
+import { motion } from "framer-motion";
 import SpendingCards from "@/components/spends/SpendingCards";
 import BottomCardSection from "@/components/spends/BottomCardSection";
 
@@ -30,27 +31,21 @@ export default function SpendsPage() {
           }}
         >
           {/* Back Arrow */}
-          <button
+          <div
             onClick={() => router.back()}
-            className="flex items-center justify-center"
+            className="flex items-center justify-center cursor-pointer"
             style={{
               width: "24px",
               height: "24px",
             }}
           >
             <Image src="/arrow-left.svg" alt="Back" width={24} height={24} />
-          </button>
+          </div>
 
           {/* Title */}
           <h1
-            className="flex-1 text-center text-white"
+            className="flex-1 text-center text-white text-page-title"
             style={{
-              fontFamily:
-                "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-              fontWeight: 600,
-              fontSize: "20px",
-              lineHeight: "26px",
-              letterSpacing: "-0.004em",
               marginRight: "24px", // Balance the back arrow width
             }}
           >
@@ -74,12 +69,18 @@ export default function SpendsPage() {
           />
         </div>
 
-        {/* Bottom Card Section */}
-        <BottomCardSection
-          selectedCategories={selectedCategories}
-          totalSpends={totalSpends}
-          categorySpends={categorySpends}
-        />
+        {/* Bottom Card Section with Animation */}
+        <motion.div
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        >
+          <BottomCardSection
+            selectedCategories={selectedCategories}
+            totalSpends={totalSpends}
+            categorySpends={categorySpends}
+          />
+        </motion.div>
       </div>
     </>
   );

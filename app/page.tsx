@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import Head from "next/head";
+import Button from "@/components/ui/Button";
 
 interface Category {
   id: string;
@@ -114,7 +115,7 @@ export default function Home() {
         <title>BankKaro - Find Your Best Credit Card</title>
       </Head>
       <div
-        className="min-h-screen pt-16 px-8"
+        className="min-h-screen pt-16 px-8 pb-40"
         style={{
           background: "linear-gradient(180deg, #242C3B 0%, #3A3F49 100%)",
         }}
@@ -149,23 +150,11 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Add Spends Button */}
-        <div className="max-w-4xl mx-auto px-4">
-          <button
-            className="w-full rounded-full text-white text-center text-button-lg"
-            style={{
-              background: "rgba(30, 87, 82, 1)",
-              border: "0.25px solid transparent",
-              borderImage:
-                "linear-gradient(309.27deg, #FFFFFF 4.34%, rgba(255, 255, 255, 0.1) 51.19%), linear-gradient(110.91deg, #FFFFFF 3.75%, rgba(255, 255, 255, 0.1) 34.54%)",
-              borderImageSlice: 1,
-              boxShadow:
-                "-4px -4px 5.8px 0px rgba(8, 33, 25, 0.15) inset, 3px 4px 5.8px 0px rgba(255, 255, 255, 0.15) inset",
-              padding: "16px 20px",
-            }}
-          >
+        {/* Add Spends Button - Fixed at Bottom */}
+        <div className="fixed bottom-0 left-0 right-0 max-w-4xl mx-auto px-4 py-4" style={{ background: "linear-gradient(180deg, transparent 0%, #3A3F49 40%)" }}>
+          <Button fullWidth>
             Add Spends
-          </button>
+          </Button>
 
           <p
             className="text-center mt-4 text-caption-xs"

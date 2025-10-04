@@ -32,30 +32,10 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
           <Image src={iconPath} alt={category.name} width={28} height={28} />
         </div>
         <div className="flex-1 min-w-0">
-          <h3
-            className="text-white mb-1"
-            style={{
-              fontFamily:
-                "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-              fontWeight: 400,
-              fontSize: "17px",
-              lineHeight: "24px",
-              letterSpacing: "0%",
-            }}
-          >
+          <h3 className="text-white mb-1 text-breakdown-category">
             {category.name}
           </h3>
-          <p
-            style={{
-              fontFamily:
-                "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-              fontWeight: 400,
-              fontSize: "13px",
-              lineHeight: "18px",
-              letterSpacing: "0.01em",
-              color: "#999999",
-            }}
-          >
+          <p className="text-breakdown-spent" style={{ color: "#999999" }}>
             {currency}
             {category.spent.toLocaleString("en-IN")} spent
           </p>
@@ -64,32 +44,11 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
 
       {/* Right Side - Savings */}
       <div className="text-right ml-4">
-        <div
-          className="text-white mb-1"
-          style={{
-            fontFamily:
-              "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-            fontWeight: 400,
-            fontSize: "17px",
-            lineHeight: "24px",
-            letterSpacing: "0%",
-          }}
-        >
+        <div className="text-white mb-1 text-breakdown-saved">
           + {currency}
           {category.saved.toLocaleString("en-IN")}
         </div>
-        <div
-          style={{
-            fontFamily:
-              "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-            fontWeight: 400,
-            fontSize: "13px",
-            lineHeight: "18px",
-            letterSpacing: "0.01em",
-            textAlign: "right",
-            color: "#999999",
-          }}
-        >
+        <div className="text-breakdown-percentage" style={{ color: "#999999" }}>
           {category.percentage}%
         </div>
       </div>
@@ -156,7 +115,7 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-white text-breakdown-heading">{data.heading}</h2>
-          <button
+          <div
             onClick={handleExpand}
             className="transition-colors text-expand-link underline"
             style={{
@@ -165,7 +124,7 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
             }}
           >
             Expand
-          </button>
+          </div>
         </div>
 
         {/* Categories */}
@@ -183,62 +142,23 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
         {/* Total Savings */}
         <div className="flex items-center justify-between pt-6 border-t border-white/10">
           <div className="flex-1">
-            <h3
-              className="text-white mb-1"
-              style={{
-                fontFamily:
-                  "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-                fontWeight: 400,
-                fontSize: "17px",
-                lineHeight: "24px",
-                letterSpacing: "0%",
-              }}
-            >
+            <h3 className="text-white mb-1 text-breakdown-category">
               Total savings
             </h3>
-            <p
-              style={{
-                fontFamily:
-                  "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-                fontWeight: 400,
-                fontSize: "13px",
-                lineHeight: "18px",
-                letterSpacing: "0.01em",
-                color: "#999999",
-              }}
-            >
+            <p className="text-breakdown-spent" style={{ color: "#999999" }}>
               {currency}
               {data.totalSpent.toLocaleString("en-IN")} spent
             </p>
           </div>
           <div className="text-right ml-4">
             <div
-              className="mb-1"
-              style={{
-                fontFamily:
-                  "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-                fontWeight: 600,
-                fontSize: "20px",
-                lineHeight: "26px",
-                letterSpacing: "-0.004em",
-                color: "#11FF00",
-              }}
+              className="mb-1 text-breakdown-total-savings"
+              style={{ color: "#11FF00" }}
             >
               {currency}
               {data.totalSavings.toLocaleString("en-IN")}
             </div>
-            <div
-              style={{
-                fontFamily:
-                  "SF Pro Text, -apple-system, BlinkMacSystemFont, sans-serif",
-                fontWeight: 400,
-                fontSize: "13px",
-                lineHeight: "18px",
-                letterSpacing: "0.01em",
-                textAlign: "right",
-                color: "#999999",
-              }}
-            >
+            <div className="text-breakdown-percentage" style={{ color: "#999999" }}>
               {data.averagePercentage}% avg
             </div>
           </div>

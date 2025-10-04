@@ -14,18 +14,21 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
-      className={`rounded-full text-white text-center text-button-md ${
+      className={`text-white text-center text-button-md cursor-pointer ${
         fullWidth ? "w-full" : ""
       } ${className}`}
       style={{
-        background: "rgba(30, 87, 82, 1)",
-        border: "0.25px solid transparent",
-        borderImage:
+        height: "54px",
+        borderRadius: "14px",
+        padding: "16px 20px",
+        background: "#1E5752",
+        border: "0.25px solid",
+        borderImageSource:
           "linear-gradient(309.27deg, #FFFFFF 4.34%, rgba(255, 255, 255, 0.1) 51.19%), linear-gradient(110.91deg, #FFFFFF 3.75%, rgba(255, 255, 255, 0.1) 34.54%)",
         borderImageSlice: 1,
         boxShadow:
-          "-4px -4px 5.8px 0px rgba(8, 33, 25, 0.15) inset, 3px 4px 5.8px 0px rgba(255, 255, 255, 0.15) inset",
-        padding: "12px 20px",
+          "-4px -4px 5.8px 0px #08211926 inset, 3px 4px 5.8px 0px #FFFFFF26 inset",
+        ...(fullWidth ? {} : { width: "336px" }),
       }}
       {...props}
     >

@@ -33,25 +33,23 @@ const CategoryRow: React.FC<CategoryRowProps> = ({
   currency = "₹",
 }) => {
   return (
-    <div className="py-4 border-b border-white/10 last:border-b-0">
+    <div className="py-4">
       <div className="flex items-center justify-between mb-1">
-        <h3 className="text-white text-lg sm:text-xl font-normal">
-          {category.name}
-        </h3>
+        <h3 className="text-white text-savings-category">{category.name}</h3>
         <div className="flex items-center gap-2">
-          <span className="text-white/70 text-base sm:text-lg">+</span>
-          <span className="text-white text-lg sm:text-xl font-medium">
+          <span className="text-white text-savings-saved">+</span>
+          <span className="text-white text-savings-saved">
             {currency}
             {category.saved.toLocaleString("en-IN")}
           </span>
         </div>
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-white/50 text-sm sm:text-base">
+        <span className="text-savings-spent" style={{ color: "#999999" }}>
           {currency}
           {category.spent.toLocaleString("en-IN")} spent
         </span>
-        <span className="text-white/50 text-sm sm:text-base">
+        <span className="text-savings-percentage" style={{ color: "#999999" }}>
           {category.percentage}%
         </span>
       </div>
@@ -66,24 +64,40 @@ const SummaryRow: React.FC<SummaryRowProps> = ({
   currency = "₹",
   isNegative = false,
   highlight = false,
+  showDivider = false,
 }) => {
   return (
-    <div className="flex items-center justify-between py-3">
+    <div className="flex items-center justify-between pt-3 mb-2">
       <span
-        className={`text-base sm:text-lg ${
-          highlight ? "text-white font-semibold" : "text-white/70"
-        }`}
+        className={
+          highlight ? "text-white text-savings-net-label" : "text-savings-label"
+        }
+        style={!highlight ? { color: "#BBBBBB" } : undefined}
       >
         {label}
       </span>
-      <span
-        className={`text-lg sm:text-xl ${
-          highlight ? "text-[#4ADE80] font-bold" : "text-white font-medium"
-        }`}
-      >
-        {isNegative ? "−" : ""} {currency}
-        {amount.toLocaleString("en-IN")}
-      </span>
+      <div className="flex flex-col items-end">
+        <span
+          className={
+            highlight
+              ? "text-savings-net-value"
+              : "text-white text-savings-value"
+          }
+          style={highlight ? { color: "#11FF00" } : undefined}
+        >
+          {isNegative ? "−" : ""} {currency}
+          {amount.toLocaleString("en-IN")}
+        </span>
+        {showDivider && (
+          <div
+            className="h-px mt-2"
+            style={{
+              width: "120%",
+              borderBottom: "1px dotted #FFFFFF1A",
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };
@@ -101,86 +115,103 @@ const SavingsCard: React.FC<SavingsCardProps> = ({
   const netSavings = monthlySavings - data.annualFee;
 
   return (
-    <div
-      className="w-full rounded-2xl p-6"
-      style={{
-        background:
-          "linear-gradient(180deg, #3E6584 -0.08%, #2C5364 40.41%, #0F2027 80.9%)",
-        border: "0.5px solid",
-        borderImageSource:
-          "linear-gradient(135.66deg, rgba(255, 255, 255, 0.18) -23.01%, rgba(16, 26, 45, 0.6) 40.85%, rgba(255, 255, 255, 0.18) 104.72%)",
-        borderImageSlice: 1,
-        fontFamily:
-          "'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
-      }}
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-8 sm:mb-10">
-        <h2 className="text-white text-xl sm:text-2xl font-normal">
-          Your monthly savings
-        </h2>
-        <button
-          onClick={onEditSpending}
-          className="flex items-center gap-2 text-white hover:text-white/80 transition-colors group"
-        >
-          <EditIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="text-sm sm:text-base underline decoration-1 underline-offset-2">
-            Edit spending
-          </span>
-        </button>
-      </div>
+    <div className="w-full relative rounded-2xl">
+      {/* Gradient border layer */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(135.66deg, rgba(255, 255, 255, 0.18) -23.01%, rgba(16, 26, 45, 0.6) 40.85%, rgba(255, 255, 255, 0.18) 104.72%)",
+          WebkitMask:
+            "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+          WebkitMaskComposite: "xor",
+          maskComposite: "exclude",
+          padding: "0.5px",
+        }}
+      />
 
-      {/* Total Savings Display */}
-      <div className="text-center mb-3 sm:mb-4">
-        <div className="text-white text-5xl sm:text-6xl md:text-7xl font-light tracking-tight mb-2">
-          {currency}
-          {data.totalSavings.toLocaleString("en-IN")}
+      {/* Content with background */}
+      <div
+        className="relative rounded-2xl"
+        style={{
+          background:
+            "linear-gradient(180deg, #3E6584 -0.08%, #2C5364 40.41%, #0F2027 80.9%)",
+        }}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4 sm:mb-6 px-6 pt-6">
+          <h2 className="text-white text-savings-heading">
+            Your monthly savings
+          </h2>
+          <div
+            onClick={onEditSpending}
+            className="flex items-center gap-2 text-white hover:text-white/80 transition-colors group cursor-pointer"
+          >
+            <EditIcon className="w-3 h-3" />
+            <span className="text-savings-edit">Edit spending</span>
+          </div>
         </div>
-        <div className="text-white/60 text-base sm:text-lg">
-          Your monthly savings
+
+        {/* Total Savings Display */}
+        <div className="text-center mb-3 sm:mb-4 px-6">
+          <div className="text-white text-savings-amount-large mb-2">
+            {currency}
+            {data.totalSavings.toLocaleString("en-IN")}
+          </div>
+          <div className="text-savings-subtitle" style={{ color: "#BBBBBB" }}>
+            Your monthly savings
+          </div>
         </div>
-      </div>
-
-      {/* Divider */}
-      <div className="w-full h-px bg-white/20 my-6 sm:my-8" />
-
-      {/* Categories */}
-      <div className="mb-6 sm:mb-8">
-        {data.categories.map((category) => (
-          <CategoryRow
-            key={category.id}
-            category={category}
-            currency={currency}
-          />
-        ))}
-      </div>
-
-      {/* Divider */}
-      <div className="w-full h-px bg-white/20 my-6 sm:my-8" />
-
-      {/* Summary Section */}
-      <div className="space-y-1">
-        <SummaryRow
-          label="Monthly savings"
-          amount={monthlySavings}
-          currency={currency}
-        />
-        <SummaryRow
-          label="Annual fee"
-          amount={data.annualFee}
-          currency={currency}
-          isNegative
-        />
 
         {/* Divider */}
-        <div className="w-full h-px bg-white/20 my-4" />
+        <div className="w-full h-px bg-white/20" />
 
-        <SummaryRow
-          label="Net savings"
-          amount={netSavings}
-          currency={currency}
-          highlight
-        />
+        {/* Categories */}
+        <div className="px-6">
+          {data.categories.map((category, index) => (
+            <React.Fragment key={category.id}>
+              <CategoryRow category={category} currency={currency} />
+              {index === 0 && (
+                <div
+                  className="-mx-6 h-px"
+                  style={{ borderBottom: "1px dotted #FFFFFF1A" }}
+                />
+              )}
+              {index === data.categories.length - 1 && (
+                <div
+                  className="-mx-6 h-px"
+                  style={{ borderBottom: "1px dotted #FFFFFF1A" }}
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-white/20" />
+
+        {/* Summary Section */}
+        <div className="space-y-1 px-6 pb-2">
+          <SummaryRow
+            label="Monthly savings"
+            amount={monthlySavings}
+            currency={currency}
+          />
+          <SummaryRow
+            label="Annual fee"
+            amount={data.annualFee}
+            currency={currency}
+            isNegative
+            showDivider
+          />
+
+          <SummaryRow
+            label="Net savings"
+            amount={netSavings}
+            currency={currency}
+            highlight
+          />
+        </div>
       </div>
     </div>
   );

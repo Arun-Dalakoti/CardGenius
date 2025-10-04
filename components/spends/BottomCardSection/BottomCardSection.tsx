@@ -69,11 +69,11 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
   const handleTouchEnd = () => {
     setIsDragging(false);
 
-    // Snap to min or max based on position
-    if (height < maxHeight * 0.3) {
-      setHeight(minHeight);
-    } else if (height > maxHeight * 0.7) {
+    // Snap to min or max - if swiped up, go to max
+    if (height > minHeight + 50) {
       setHeight(maxHeight);
+    } else {
+      setHeight(minHeight);
     }
   };
 
@@ -147,7 +147,7 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
               alt="Arrow"
               width={24}
               height={24}
-              className="transform rotate-90"
+              className="transform rotate-90 cursor-pointer"
             />
           </div>
           <p className="text-white/60 px-4 mb-3 text-body-sm">
@@ -227,12 +227,12 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
                           </span>
                         </div>
                       </div>
-                      <button
-                        className="text-link underline"
+                      <div
+                        className="text-link underline cursor-pointer"
                         style={{ color: "#4A90E2" }}
                       >
                         View Details
-                      </button>
+                      </div>
                     </div>
                   </div>
                 ))}

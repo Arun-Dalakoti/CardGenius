@@ -86,7 +86,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onToggle }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <button
+    <div
       onClick={() => onToggle(category.id)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -148,7 +148,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onToggle }) => {
             "radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)",
         }}
       />
-    </button>
+    </div>
   );
 };
 
