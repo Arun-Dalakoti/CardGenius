@@ -22,6 +22,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [windowHeight, setWindowHeight] = useState(0);
+  const [startTime, setStartTime] = useState(0);
+  const [currentY, setCurrentY] = useState(0);
 
   useEffect(() => {
     setWindowHeight(window.innerHeight);
@@ -44,26 +46,53 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   }, [height, minHeight]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setStartY(e.touches[0].clientY);
+    const touchY = e.touches[0].clientY;
+    setStartY(touchY);
+    setCurrentY(touchY);
+    setStartTime(Date.now());
     setIsDragging(true);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return;
-    const deltaY = startY - e.touches[0].clientY;
+    const touchY = e.touches[0].clientY;
+    const deltaY = currentY - touchY;
     const newHeight = Math.min(Math.max(height + deltaY, minHeight), maxHeight);
     setHeight(newHeight);
-    setStartY(e.touches[0].clientY);
+    setCurrentY(touchY);
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     setIsDragging(false);
 
-    // Snap to min or max - if swiped up, go to max
-    if (height > minHeight + 50) {
+    const endY = e.changedTouches[0].clientY;
+    const totalDistance = endY - startY; // Total vertical distance moved
+    const totalTime = Date.now() - startTime; // Total time elapsed
+    const velocity = totalTime > 0 ? Math.abs(totalDistance / totalTime) : 0;
+
+    // Lower thresholds for more responsive behavior
+    const dragThreshold = 50; // Reduced from 100px to 50px
+    const velocityThreshold = 0.3; // Reduced from 0.5 to 0.3
+
+    const isDraggingDown = totalDistance > 0;
+    const isDraggingUp = totalDistance < 0;
+    const dragDistance = Math.abs(totalDistance);
+
+    // More responsive snapping logic
+    if (isDraggingDown && (velocity > velocityThreshold || dragDistance > dragThreshold)) {
+      // Dragging down - close
+      setHeight(minHeight);
+    } else if (isDraggingUp && (velocity > velocityThreshold || dragDistance > dragThreshold)) {
+      // Dragging up - open
       setHeight(maxHeight);
     } else {
-      setHeight(minHeight);
+      // Very small movement - snap based on current position
+      const midPoint = (maxHeight + minHeight) / 2;
+      if (height > midPoint) {
+        setHeight(maxHeight);
+      } else {
+        setHeight(minHeight);
+      }
     }
   };
 
