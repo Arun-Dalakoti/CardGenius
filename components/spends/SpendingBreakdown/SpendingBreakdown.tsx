@@ -123,7 +123,6 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
         style={{
           background:
             "linear-gradient(169.98deg, #353F54 27.98%, #222834 81.2%)",
-          border: "0.5px solid",
           borderImageSource:
             "linear-gradient(135.66deg, rgba(255, 255, 255, 0.18) -23.01%, rgba(16, 26, 45, 0.6) 40.85%, rgba(255, 255, 255, 0.18) 104.72%)",
           borderImageSlice: 1,
@@ -144,7 +143,7 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
           </div>
         </div>
 
-        <div className="mb-6 space-y-4">
+        <div className="space-y-2">
           {data.categories.map((category, index) => (
             <React.Fragment key={category.id}>
               <CategoryRow category={category} currency={currency} />

@@ -64,7 +64,6 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
       className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 transition-all duration-300"
       style={{
         background: "linear-gradient(169.98deg, #353F54 27.98%, #222834 81.2%)",
-        border: "0.5px solid",
         borderImageSource:
           "linear-gradient(135.66deg, rgba(255, 255, 255, 0.18) -23.01%, rgba(16, 26, 45, 0.6) 40.85%, rgba(255, 255, 255, 0.18) 104.72%)",
         borderImageSlice: 1,
@@ -176,7 +175,6 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
               className="rounded-lg text-white text-increment-btn transition-all hover:opacity-80"
               style={{
                 background: "#DDDDDD1A",
-                border: "0.5px solid",
                 borderImageSource:
                   "linear-gradient(113.84deg, rgba(153, 153, 153, 0.1) -39.29%, #2F384A 65.56%, rgba(204, 204, 204, 0.3) 166%)",
                 borderImageSlice: 1,
@@ -210,14 +208,14 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
       >
         {category.savingsMessage && (
           <div
-            className="rounded-xl sm:rounded-2xl p-4 sm:p-5 flex items-start gap-3 sm:gap-4"
+            className="rounded-xl sm:rounded-2xl p-4 sm:p-5 flex items-center gap-3 sm:gap-4"
             style={{ background: "rgba(255, 255, 255, 0.05)" }}
           >
             <Image
               src="/spends/star.svg"
               alt="Star"
-              width={24}
-              height={24}
+              width={30}
+              height={30}
               className="flex-shrink-0 mt-1"
               style={{ width: "24px", height: "24px" }}
             />
@@ -250,21 +248,24 @@ const SpendingCards: React.FC<SpendingCategoriesProps> = ({
 }) => {
   const { categorySpends: storeCategorySpends } = useSpendingStore();
 
-  const [amounts, setAmounts] = React.useState<{ [key: string]: number }>(() => {
-    // Initialize from store if available, otherwise use default
-    if (storeCategorySpends && Object.keys(storeCategorySpends).length > 0) {
-      return storeCategorySpends;
+  const [amounts, setAmounts] = React.useState<{ [key: string]: number }>(
+    () => {
+      // Initialize from store if available, otherwise use default
+      if (storeCategorySpends && Object.keys(storeCategorySpends).length > 0) {
+        return storeCategorySpends;
+      }
+      return data.categories.reduce(
+        (acc, cat) => ({ ...acc, [cat.id]: cat.currentAmount }),
+        {}
+      );
     }
-    return data.categories.reduce(
-      (acc, cat) => ({ ...acc, [cat.id]: cat.currentAmount }),
-      {}
-    );
-  });
+  );
 
   // Filter categories based on filterCategories prop
-  const categoriesToShow = filterCategories.length > 0
-    ? data.categories.filter((cat) => filterCategories.includes(cat.id))
-    : data.categories;
+  const categoriesToShow =
+    filterCategories.length > 0
+      ? data.categories.filter((cat) => filterCategories.includes(cat.id))
+      : data.categories;
 
   React.useEffect(() => {
     // Calculate total and notify parent

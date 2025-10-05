@@ -90,11 +90,15 @@ export default function CardDetailPage() {
                   <div className="flex justify-between items-end">
                     <div>
                       <p className="text-white/80 text-xs">Cashback</p>
-                      <p className="text-white text-2xl font-bold">{cardData.cashback}%</p>
+                      <p className="text-white text-2xl font-bold">
+                        {cardData.cashback}%
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-white/80 text-xs">Joining Bonus</p>
-                      <p className="text-white text-lg font-semibold">₹{cardData.joiningBonus.toLocaleString("en-IN")}</p>
+                      <p className="text-white text-lg font-semibold">
+                        ₹{cardData.joiningBonus.toLocaleString("en-IN")}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -204,7 +208,9 @@ export default function CardDetailPage() {
                       >
                         Annual fee
                       </p>
-                      <p className="text-card-stat-value text-white">₹{cardData.annualFee.toLocaleString("en-IN")}</p>
+                      <p className="text-card-stat-value text-white">
+                        ₹{cardData.annualFee.toLocaleString("en-IN")}
+                      </p>
                       <div
                         className="absolute top-0 bottom-0 right-0 w-px"
                         style={{ background: "#FFFFFF1A" }}
@@ -218,7 +224,9 @@ export default function CardDetailPage() {
                       >
                         Joining bonus
                       </p>
-                      <p className="text-card-stat-value text-white">₹{cardData.joiningBonus.toLocaleString("en-IN")}</p>
+                      <p className="text-card-stat-value text-white">
+                        ₹{cardData.joiningBonus.toLocaleString("en-IN")}
+                      </p>
                       <div
                         className="absolute top-0 bottom-0 right-0 w-px"
                         style={{ background: "#FFFFFF1A" }}
@@ -232,7 +240,9 @@ export default function CardDetailPage() {
                       >
                         Reward points
                       </p>
-                      <p className="text-card-stat-value text-white">{cardData.rewardPoints}</p>
+                      <p className="text-card-stat-value text-white">
+                        {cardData.rewardPoints}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -257,7 +267,9 @@ export default function CardDetailPage() {
                     "linear-gradient(180deg, transparent 0%, #1F2630 40%)",
                 }}
               >
-                <Button fullWidth onClick={handleApplyNow}>Apply Now</Button>
+                <Button fullWidth onClick={handleApplyNow}>
+                  Apply Now
+                </Button>
               </div>
 
               <div className="h-20 lg:hidden" />
@@ -269,7 +281,9 @@ export default function CardDetailPage() {
                   <SavingsCard />
                 </div>
 
-                <Button fullWidth onClick={handleApplyNow}>Apply Now</Button>
+                <Button fullWidth onClick={handleApplyNow}>
+                  Apply Now
+                </Button>
               </div>
             </div>
           </div>

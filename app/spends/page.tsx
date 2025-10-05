@@ -21,14 +21,17 @@ export default function SpendsPage() {
     selectedCategories: storeCategories,
     categorySpends: storeCategorySpends,
     setCategorySpends: setStoreCategorySpends,
-    setTotalSpends: setStoreTotalSpends
+    setTotalSpends: setStoreTotalSpends,
   } = useSpendingStore();
 
   // Initialize from store on mount
   useEffect(() => {
     if (storeCategorySpends && Object.keys(storeCategorySpends).length > 0) {
       setCategorySpends(storeCategorySpends);
-      const total = Object.values(storeCategorySpends).reduce((sum, val) => sum + val, 0);
+      const total = Object.values(storeCategorySpends).reduce(
+        (sum, val) => sum + val,
+        0
+      );
       setTotalSpends(total);
     }
   }, []);
@@ -37,7 +40,12 @@ export default function SpendsPage() {
   useEffect(() => {
     setStoreCategorySpends(categorySpends);
     setStoreTotalSpends(totalSpends);
-  }, [categorySpends, totalSpends, setStoreCategorySpends, setStoreTotalSpends]);
+  }, [
+    categorySpends,
+    totalSpends,
+    setStoreCategorySpends,
+    setStoreTotalSpends,
+  ]);
 
   return (
     <>
@@ -74,7 +82,7 @@ export default function SpendsPage() {
         </header>
 
         <div
-          className="px-4 lg:px-8 pb-[220px] lg:pb-16 min-h-screen lg:min-h-[1300px]"
+          className="px-4 lg:px-8 pb-[250px] lg:pb-16 min-h-screen lg:min-h-[1300px]"
           style={{
             paddingTop: "calc(26px + 24px + 20px)",
             background: "linear-gradient(180deg, #242C3B 0%, #3A3F49 100%)",
