@@ -117,7 +117,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             }}
             onClick={handleClick}
           >
-            <div className="relative z-10 px-4 pt-2 mb-1">
+            <div className="relative z-10 px-4 pt-2">
               <p className="text-white text-save-monthly">
                 Save monthly upto{" "}
                 <span
@@ -128,6 +128,9 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
                 >
                   ₹{monthlySavings.toLocaleString("en-IN")}
                 </span>
+              </p>
+              <p className="text-white/60 text-body-sm mt-1">
+                {recommendedCardsCount} recommended cards
               </p>
             </div>
 

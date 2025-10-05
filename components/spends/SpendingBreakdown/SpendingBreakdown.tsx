@@ -119,7 +119,7 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
   return (
     <div className="w-full max-w-4xl mx-auto px-4">
       <div
-        className="relative rounded-2xl p-6"
+        className="relative rounded-2xl overflow-hidden"
         style={{
           background:
             "linear-gradient(169.98deg, #353F54 27.98%, #222834 81.2%)",
@@ -129,54 +129,69 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
           boxShadow: "1px 8px 10px 0px #0000001F",
         }}
       >
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-white text-breakdown-heading">{data.heading}</h2>
-          <div
-            onClick={handleExpand}
-            className="transition-colors text-expand-link underline cursor-pointer"
-            style={{
-              textDecorationStyle: "dotted",
-              color: "#999999",
-            }}
-          >
-            Expand
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          {data.categories.map((category, index) => (
-            <React.Fragment key={category.id}>
-              <CategoryRow category={category} currency={currency} />
-              {index < data.categories.length - 1 && (
-                <div className="h-px bg-white/10" />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-
-        <div className="flex items-center justify-between pt-6 border-t border-white/10">
-          <div className="flex-1">
-            <h3 className="text-white mb-1 text-breakdown-category">
-              Total savings
-            </h3>
-            <p className="text-breakdown-spent" style={{ color: "#999999" }}>
-              {currency}
-              {data.totalSpent.toLocaleString("en-IN")} spent
-            </p>
-          </div>
-          <div className="text-right ml-4">
+        <div className="p-6 pb-0">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-white text-breakdown-heading">
+              {data.heading}
+            </h2>
             <div
-              className="mb-1 text-breakdown-total-savings"
-              style={{ color: "#11FF00" }}
+              onClick={handleExpand}
+              className="transition-colors text-expand-link underline cursor-pointer"
+              style={{
+                textDecorationStyle: "dotted",
+                color: "#999999",
+              }}
             >
-              {currency}
-              {data.totalSavings.toLocaleString("en-IN")}
+              {isExpanded ? "Collapse" : "Expand"}
             </div>
-            <div
-              className="text-breakdown-percentage"
-              style={{ color: "#999999" }}
-            >
-              {data.averagePercentage}% avg
+          </div>
+        </div>
+
+        {/* Divider - full width over padding */}
+        <div className="w-full h-px" style={{ background: "#FFFFFF1A" }} />
+
+        {/* Categories - Only shown when expanded */}
+        {isExpanded && (
+          <div className="px-6 space-y-2">
+            {data.categories.map((category, index) => (
+              <React.Fragment key={category.id}>
+                <CategoryRow category={category} currency={currency} />
+              </React.Fragment>
+            ))}
+          </div>
+        )}
+
+        {/* Divider before total savings when expanded */}
+        {isExpanded && (
+          <div className="w-full h-px" style={{ background: "#FFFFFF1A" }} />
+        )}
+
+        {/* Total Savings - Always visible */}
+        <div className="px-8 pb-4 pt-4">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="text-white mb-1 text-breakdown-category">
+                Total savings
+              </h3>
+              <p className="text-breakdown-spent" style={{ color: "#999999" }}>
+                {currency}
+                {data.totalSpent.toLocaleString("en-IN")} spent
+              </p>
+            </div>
+            <div className="text-right ml-4">
+              <div
+                className="mb-1 text-breakdown-total-savings"
+                style={{ color: "#11FF00" }}
+              >
+                {currency}
+                {data.totalSavings.toLocaleString("en-IN")}
+              </div>
+              <div
+                className="text-breakdown-spent"
+                style={{ color: "#999999" }}
+              >
+                {data.averagePercentage}% avg
+              </div>
             </div>
           </div>
         </div>

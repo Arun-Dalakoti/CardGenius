@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import type {
   SpendingCategoryCardProps,
   SpendingCategoriesProps,
@@ -288,13 +289,23 @@ const SpendingCards: React.FC<SpendingCategoriesProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4 sm:space-y-6">
-      {categoriesToShow.map((category) => (
-        <SpendingCategoryCard
+      {categoriesToShow.map((category, index) => (
+        <motion.div
           key={category.id}
-          category={category}
-          initialAmount={amounts[category.id]}
-          onAmountChange={(amount) => handleAmountChange(category.id, amount)}
-        />
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.5,
+            delay: index * 0.1,
+            ease: "easeOut",
+          }}
+        >
+          <SpendingCategoryCard
+            category={category}
+            initialAmount={amounts[category.id]}
+            onAmountChange={(amount) => handleAmountChange(category.id, amount)}
+          />
+        </motion.div>
       ))}
     </div>
   );

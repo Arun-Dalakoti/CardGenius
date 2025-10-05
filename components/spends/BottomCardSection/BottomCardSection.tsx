@@ -55,7 +55,7 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
         name: currentCard.name,
         rating: currentCard.rating || 4.5,
         totalReviews: currentCard.reviews || 2847,
-        bestFor: `Best for your ${selectedCategories.join(", ")} spends`,
+        bestFor: `Best for your ${currentCard.categories.join(", ")} spends`,
         categories: Object.entries(categorySpends)
           .filter(([, amount]) => amount > 0)
           .map(([id, spent]) => ({
@@ -120,7 +120,7 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
           </div>
         )}
 
-        <div className="flex items-center justify-between px-4 lg:px-0 mb-3">
+        <div className="flex items-center justify-between px-4 lg:px-0 mb-3 pt-3">
           <p className="text-white/60 text-body-sm">
             {recommendedCards.length} recommended cards
           </p>

@@ -48,28 +48,50 @@ const SparkleIcon: React.FC<{ className?: string }> = ({ className }) => (
 
 // Star Rating Component
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
-
   return (
-    <div className="flex gap-1">
-      {[...Array(5)].map((_, i) => (
-        <svg key={i} width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M10 2L12.245 7.905L18.5 8.745L14.25 12.855L15.245 19.09L10 16.105L4.755 19.09L5.75 12.855L1.5 8.745L7.755 7.905L10 2Z"
-            fill={
-              i < fullStars
-                ? "#FCD34D"
-                : i === fullStars && hasHalfStar
-                ? "#FCD34D"
-                : "#6B7280"
-            }
-            fillOpacity={
-              i < fullStars ? 1 : i === fullStars && hasHalfStar ? 0.5 : 0.3
-            }
-          />
-        </svg>
-      ))}
+    <div className="flex gap-0.5">
+      {[...Array(5)].map((_, i) => {
+        const isFilled = i < Math.floor(rating);
+        const isHalfFilled = i === Math.floor(rating) && rating % 1 !== 0;
+        const isEmpty = i >= Math.ceil(rating);
+
+        if (isHalfFilled) {
+          return (
+            <svg key={i} width="12" height="12" viewBox="0 0 20 20" fill="none">
+              <defs>
+                <linearGradient id={`half-${i}`}>
+                  <stop offset="50%" stopColor="#FFB800" />
+                  <stop offset="50%" stopColor="transparent" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M10 1.25L12.704 6.77L18.75 7.65L14.375 11.925L15.408 17.95L10 15.125L4.592 17.95L5.625 11.925L1.25 7.65L7.296 6.77L10 1.25Z"
+                fill={`url(#half-${i})`}
+              />
+              <path
+                d="M10 1.25L12.704 6.77L18.75 7.65L14.375 11.925L15.408 17.95L10 15.125L4.592 17.95L5.625 11.925L1.25 7.65L7.296 6.77L10 1.25Z"
+                stroke="#FFB800"
+                strokeWidth="1.5"
+                fill="none"
+              />
+            </svg>
+          );
+        }
+
+        return (
+          <svg
+            key={i}
+            width="12"
+            height="12"
+            viewBox="0 0 20 20"
+            fill={isFilled ? "#FFB800" : "none"}
+            stroke={isEmpty ? "#FFFFFF" : "#FFB800"}
+            strokeWidth="1.5"
+          >
+            <path d="M10 1.25L12.704 6.77L18.75 7.65L14.375 11.925L15.408 17.95L10 15.125L4.592 17.95L5.625 11.925L1.25 7.65L7.296 6.77L10 1.25Z" />
+          </svg>
+        );
+      })}
     </div>
   );
 };
@@ -85,7 +107,7 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
     iconMap[category.icon as keyof typeof iconMap] || iconMap.shopping;
 
   return (
-    <div className="flex items-center justify-between py-4 border-b border-white/10 last:border-b-0">
+    <div className="flex items-center justify-between py-4">
       <div className="flex items-center gap-3 flex-1">
         <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
           <Image src={iconPath} alt={category.name} width={20} height={20} />
@@ -125,7 +147,7 @@ const MobileCardDetails: React.FC<MobileCardDetailsProps> = ({
   const currency = data.currency || "₹";
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md mx-auto pb-20">
       {/* Gradient Header Background */}
 
       {/* Main Card Container */}
@@ -146,13 +168,15 @@ const MobileCardDetails: React.FC<MobileCardDetailsProps> = ({
 
           {/* Rating */}
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-white text-base font-medium">
-              {data.rating}
-            </span>
-            <span className="text-white/60 text-sm">
-              ({data.totalReviews.toLocaleString("en-IN")} reviews)
-            </span>
-            <StarRating rating={data.rating} />
+            <div className="flex items-center gap-1">
+              <span className="text-white/80 text-sm">{data.rating}</span>
+              <div className="flex items-center gap-0.5">
+                <StarRating rating={data.rating} />
+              </div>
+              <span className="text-white/80 text-sm">
+                ({data.totalReviews.toLocaleString("en-IN")} reviews)
+              </span>
+            </div>
             <button
               onClick={onViewDetails}
               className="ml-auto text-white/60 text-sm underline"
@@ -162,17 +186,41 @@ const MobileCardDetails: React.FC<MobileCardDetailsProps> = ({
           </div>
 
           {/* Best For Badge */}
-          <div
-            className="rounded-full px-4 py-3 flex items-center gap-2"
-            style={{
-              background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(234, 179, 8, 0.3)",
-            }}
-          >
-            <SparkleIcon className="text-yellow-400 flex-shrink-0" />
-            <span className="text-white text-sm">{data.bestFor}</span>
-            <div className="ml-auto w-6 h-6 rounded-full bg-white/10" />
+          <div className="relative overflow-hidden">
+            <div
+              className="absolute inset-0 rounded-full pointer-events-none animate-border-slide"
+              style={{
+                background:
+                  "linear-gradient(90deg, #39B6D8 0%, #F7D344 50%, #E38330 100%)",
+                WebkitMask:
+                  "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                WebkitMaskComposite: "xor",
+                maskComposite: "exclude",
+                padding: "2px",
+                backgroundSize: "200% 100%",
+                animation: "border-slide 3s linear infinite",
+              }}
+            />
+            <div
+              className="relative rounded-full px-2 py-3 flex items-center gap-2"
+              style={{
+                background: "rgba(255, 255, 255, 0.05)",
+              }}
+            >
+              <SparkleIcon className="text-yellow-400 flex-shrink-0" />
+              <span className="text-white text-sm">{data.bestFor}</span>
+            </div>
           </div>
+          <style jsx>{`
+            @keyframes border-slide {
+              0% {
+                background-position: 0% 0%;
+              }
+              100% {
+                background-position: 200% 0%;
+              }
+            }
+          `}</style>
         </div>
 
         {/* Savings Breakdown */}
@@ -183,8 +231,8 @@ const MobileCardDetails: React.FC<MobileCardDetailsProps> = ({
             maxHeight: "500px",
           }}
         >
-          <div className="p-5">
-            <div className="flex items-center justify-between mb-5">
+          <div className="p-4 pb-0">
+            <div className="flex items-center justify-between mb-3">
               <h2 className="text-white text-lg font-medium">
                 Savings breakdown
               </h2>
@@ -192,29 +240,39 @@ const MobileCardDetails: React.FC<MobileCardDetailsProps> = ({
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="text-white/60 text-sm underline"
               >
-                Expand
+                {isExpanded ? "Collapse" : "Expand"}
               </button>
             </div>
+          </div>
 
-            {/* Divider */}
-            <div
-              className="w-full h-px mb-5"
-              style={{ background: "#FFFFFF1A" }}
-            />
+          {/* Divider - full width over padding */}
+          <div className="w-full h-px" style={{ background: "#FFFFFF1A" }} />
 
-            {/* Categories */}
-            <div>
-              {data.categories.map((category) => (
-                <CategoryRow
-                  key={category.id}
-                  category={category}
-                  currency={currency}
-                />
-              ))}
-            </div>
+          <div className="px-5">
+            {/* Categories - Only shown when expanded */}
+            {isExpanded && (
+              <>
+                <div>
+                  {data.categories.map((category) => (
+                    <CategoryRow
+                      key={category.id}
+                      category={category}
+                      currency={currency}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
 
-            {/* Total Savings */}
-            <div className="flex items-end justify-between mt-5 pt-5 border-t border-white/10">
+          {/* Divider before total savings when expanded */}
+          {isExpanded && (
+            <div className="w-full h-px" style={{ background: "#FFFFFF1A" }} />
+          )}
+
+          {/* Total Savings - Always visible */}
+          <div className={`px-6 ${isExpanded ? "pb-40" : "pb-4"}`}>
+            <div className="flex items-end justify-between pt-4">
               <div>
                 <h3 className="text-white text-lg font-medium mb-1">
                   Total savings
@@ -225,11 +283,17 @@ const MobileCardDetails: React.FC<MobileCardDetailsProps> = ({
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-[#10B981] text-2xl font-bold mb-1">
+                <div
+                  className="text-breakdown-total-savings mb-1"
+                  style={{ color: "#11FF00" }}
+                >
                   {currency}
                   {data.totalSavings.toLocaleString("en-IN")}
                 </div>
-                <div className="text-white/40 text-sm">
+                <div
+                  className="text-breakdown-spent"
+                  style={{ color: "#999999" }}
+                >
                   {data.averagePercentage}% avg
                 </div>
               </div>

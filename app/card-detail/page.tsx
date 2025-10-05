@@ -290,7 +290,7 @@ export default function CardDetailPage() {
         </div>
 
         <Toast
-          message="Application submitted successfully! Our team will contact you soon."
+          message="Application submitted! We'll contact you soon."
           isVisible={showToast}
           onClose={() => setShowToast(false)}
           duration={4000}
