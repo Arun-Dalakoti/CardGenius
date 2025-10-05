@@ -1,12 +1,14 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import type {
   CategoryRowProps,
   SummaryRowProps,
   SavingsCardProps,
 } from "./SavingsCard.types";
 import { savingsConfig } from "./SavingsCard.data";
+import { useSpendingStore } from "@/store/spendingStore";
 
 // Edit Icon Component
 const EditIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -108,15 +110,30 @@ const SavingsCard: React.FC<SavingsCardProps> = ({
   currency = "₹",
   onEditSpending,
 }) => {
-  const monthlySavings = data.categories.reduce(
+  const router = useRouter();
+  const { categorySavings, totalSavings, selectedCard } = useSpendingStore();
+
+  // Use the stored savings data from the spends page
+  const displayCategories = categorySavings.length > 0 ? categorySavings : data.categories;
+  const monthlySavings = totalSavings > 0 ? totalSavings : data.categories.reduce(
     (sum, cat) => sum + cat.saved,
     0
   );
-  const netSavings = monthlySavings - data.annualFee;
+
+  const annualFee = selectedCard?.annualFee || data.annualFee;
+  const annualSavings = monthlySavings * 12;
+  const netSavings = annualSavings - annualFee;
+
+  const handleEditSpending = () => {
+    if (onEditSpending) {
+      onEditSpending();
+    } else {
+      router.push("/spends");
+    }
+  };
 
   return (
     <div className="w-full relative rounded-2xl">
-      {/* Gradient border layer */}
       <div
         className="absolute inset-0 rounded-2xl pointer-events-none"
         style={{
@@ -130,7 +147,6 @@ const SavingsCard: React.FC<SavingsCardProps> = ({
         }}
       />
 
-      {/* Content with background */}
       <div
         className="relative rounded-2xl"
         style={{
@@ -138,13 +154,12 @@ const SavingsCard: React.FC<SavingsCardProps> = ({
             "linear-gradient(180deg, #3E6584 -0.08%, #2C5364 40.41%, #0F2027 80.9%)",
         }}
       >
-        {/* Header */}
         <div className="flex items-start justify-between mb-4 sm:mb-6 px-6 pt-6">
           <h2 className="text-white text-savings-heading">
             Your monthly savings
           </h2>
           <div
-            onClick={onEditSpending}
+            onClick={handleEditSpending}
             className="flex items-center gap-2 text-white hover:text-white/80 transition-colors group cursor-pointer"
           >
             <EditIcon className="w-3 h-3" />
@@ -152,32 +167,24 @@ const SavingsCard: React.FC<SavingsCardProps> = ({
           </div>
         </div>
 
-        {/* Total Savings Display */}
         <div className="text-center mb-3 sm:mb-4 px-6">
           <div className="text-white text-savings-amount-large mb-2">
             {currency}
-            {data.totalSavings.toLocaleString("en-IN")}
+            {monthlySavings.toLocaleString("en-IN")}
           </div>
           <div className="text-savings-subtitle" style={{ color: "#BBBBBB" }}>
             Your monthly savings
           </div>
         </div>
 
-        {/* Divider */}
         <div className="w-full h-px bg-white/20" />
 
-        {/* Categories */}
         <div className="px-6">
-          {data.categories.map((category, index) => (
+          {displayCategories.map((category, index) => (
             <React.Fragment key={category.id}>
               <CategoryRow category={category} currency={currency} />
-              {index === 0 && (
-                <div
-                  className="-mx-6 h-px"
-                  style={{ borderBottom: "1px dotted #FFFFFF1A" }}
-                />
-              )}
-              {index === data.categories.length - 1 && (
+
+              {index === displayCategories.length - 1 && (
                 <div
                   className="-mx-6 h-px"
                   style={{ borderBottom: "1px dotted #FFFFFF1A" }}
@@ -187,10 +194,8 @@ const SavingsCard: React.FC<SavingsCardProps> = ({
           ))}
         </div>
 
-        {/* Divider */}
         <div className="w-full h-px bg-white/20" />
 
-        {/* Summary Section */}
         <div className="space-y-1 px-6 pb-2">
           <SummaryRow
             label="Monthly savings"
@@ -198,8 +203,13 @@ const SavingsCard: React.FC<SavingsCardProps> = ({
             currency={currency}
           />
           <SummaryRow
+            label="Annual savings"
+            amount={annualSavings}
+            currency={currency}
+          />
+          <SummaryRow
             label="Annual fee"
-            amount={data.annualFee}
+            amount={annualFee}
             currency={currency}
             isNegative
             showDivider

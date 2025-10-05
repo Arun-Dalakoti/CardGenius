@@ -98,7 +98,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onToggle }) => {
           : "2px solid rgba(255, 255, 255, 0.1)",
       }}
     >
-      {/* Glossy Overlay */}
       <div
         className="absolute inset-0 opacity-30 pointer-events-none"
         style={{
@@ -107,16 +106,13 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onToggle }) => {
         }}
       />
 
-      {/* Checkmark */}
       {category.selected && (
         <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 animate-scaleIn">
           <CheckmarkIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
         </div>
       )}
 
-      {/* Content */}
       <div className="relative h-full flex flex-col items-center justify-center p-4 sm:p-6">
-        {/* Emoji with Zoom Effect */}
         <div
           className="mb-3 sm:mb-4 md:mb-6 transition-all duration-300 transform"
           style={{
@@ -133,13 +129,11 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onToggle }) => {
           {category.emoji}
         </div>
 
-        {/* Category Name */}
         <h3 className="text-white text-lg sm:text-xl md:text-2xl lg:text-3xl font-medium">
           {category.name}
         </h3>
       </div>
 
-      {/* Hover Glow Effect */}
       <div
         className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-300"
         style={{
@@ -187,14 +181,12 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
-      {/* Heading */}
       {data.heading && (
         <h2 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-normal text-center mb-8 sm:mb-12 md:mb-16 leading-tight">
           {data.heading}
         </h2>
       )}
 
-      {/* Grid */}
       <div className={gridClass}>
         {categories.map((category) => (
           <CategoryCard

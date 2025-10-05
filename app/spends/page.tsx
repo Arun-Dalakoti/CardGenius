@@ -2,27 +2,49 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import SpendingCards from "@/components/spends/SpendingCards";
 import BottomCardSection from "@/components/spends/BottomCardSection";
+import { useSpendingStore } from "@/store/spendingStore";
 
 export default function SpendsPage() {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [totalSpends, setTotalSpends] = useState(18000); // Default total from spending cards
+  const [totalSpends, setTotalSpends] = useState(0);
   const [categorySpends, setCategorySpends] = useState<{
     [key: string]: number;
   }>({});
+
+  const {
+    selectedCategories: storeCategories,
+    categorySpends: storeCategorySpends,
+    setCategorySpends: setStoreCategorySpends,
+    setTotalSpends: setStoreTotalSpends
+  } = useSpendingStore();
+
+  // Initialize from store on mount
+  useEffect(() => {
+    if (storeCategorySpends && Object.keys(storeCategorySpends).length > 0) {
+      setCategorySpends(storeCategorySpends);
+      const total = Object.values(storeCategorySpends).reduce((sum, val) => sum + val, 0);
+      setTotalSpends(total);
+    }
+  }, []);
+
+  // Sync local state to store
+  useEffect(() => {
+    setStoreCategorySpends(categorySpends);
+    setStoreTotalSpends(totalSpends);
+  }, [categorySpends, totalSpends, setStoreCategorySpends, setStoreTotalSpends]);
 
   return (
     <>
       <Head>
         <title>Add Spends - BankKaro</title>
       </Head>
-      <div className="min-h-screen">
-        {/* Fixed Header */}
+      <div>
         <header
           className="fixed top-0 left-0 right-0 z-50 flex items-center"
           style={{
@@ -30,7 +52,6 @@ export default function SpendsPage() {
             padding: "12px",
           }}
         >
-          {/* Back Arrow */}
           <div
             onClick={() => router.back()}
             className="flex items-center justify-center cursor-pointer"
@@ -42,7 +63,6 @@ export default function SpendsPage() {
             <Image src="/arrow-left.svg" alt="Back" width={24} height={24} />
           </div>
 
-          {/* Title */}
           <h1
             className="flex-1 text-center text-white text-page-title"
             style={{
@@ -53,24 +73,35 @@ export default function SpendsPage() {
           </h1>
         </header>
 
-        {/* Content (with padding to account for fixed header) */}
         <div
-          className="min-h-screen px-4"
+          className="px-4 lg:px-8 pb-[220px] lg:pb-16 min-h-screen lg:min-h-[1300px]"
           style={{
             paddingTop: "calc(26px + 24px + 20px)",
-            paddingBottom: "220px",
             background: "linear-gradient(180deg, #242C3B 0%, #3A3F49 100%)",
           }}
         >
-          <SpendingCards
-            onCategoryChange={setSelectedCategories}
-            onTotalChange={setTotalSpends}
-            onCategorySpendsChange={setCategorySpends}
-          />
+          <div className="max-w-7xl mx-auto lg:flex lg:gap-8 lg:items-start">
+            <div className="lg:w-1/2 lg:flex-shrink-0">
+              <SpendingCards
+                onCategoryChange={setSelectedCategories}
+                onTotalChange={setTotalSpends}
+                onCategorySpendsChange={setCategorySpends}
+                filterCategories={storeCategories}
+              />
+            </div>
+
+            <div className="hidden lg:block lg:w-1/2 lg:flex-shrink-0">
+              <BottomCardSection
+                selectedCategories={selectedCategories}
+                totalSpends={totalSpends}
+                categorySpends={categorySpends}
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Bottom Card Section with Animation */}
         <motion.div
+          className="lg:hidden"
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 200 }}

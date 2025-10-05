@@ -7,6 +7,9 @@ export interface CreditCard {
   cashback: number;
   annualFee: number;
   joiningBonus: number;
+  rating?: number;
+  reviews?: number;
+  rewardPoints?: string;
 }
 
 export interface BottomCardSectionProps {

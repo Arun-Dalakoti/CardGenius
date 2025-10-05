@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Head from "next/head";
 import Button from "@/components/ui/Button";
+import Toast from "@/components/ui/Toast";
+import { useSpendingStore } from "@/store/spendingStore";
 
 interface Category {
   id: string;
@@ -30,18 +33,18 @@ function CategoryCard({
   return (
     <div
       onClick={onToggle}
-      className="relative cursor-pointer p-2"
+      className="relative cursor-pointer p-2 lg:p-4"
       style={{
-        background: isSelected
-          ? "#0263BE33"
+        backgroundImage: isSelected
+          ? "none"
           : "linear-gradient(180deg, #242C3B 0%, #3A3F49 100%)",
+        backgroundColor: isSelected ? "#0263BE33" : "transparent",
         backgroundClip: "padding-box",
         border: "2px solid transparent",
         position: "relative",
         borderRadius: "20px",
       }}
     >
-      {/* Gradient border */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -56,27 +59,26 @@ function CategoryCard({
           borderRadius: "20px",
         }}
       />
-      {/* Checkbox - half in, half out at top right */}
       <div className="absolute -top-3 -right-3 z-10">
         <Image
           src="/checkbox.svg"
           alt="Checkbox"
           width={24}
           height={24}
+          className="lg:w-8 lg:h-8"
           style={{
             opacity: isSelected ? 1 : 0.3,
           }}
         />
       </div>
 
-      {/* Icon */}
       <div
         className="flex justify-center transition-transform duration-300 mb-1"
         style={{
           position: "relative",
           top: "-24.64px",
           left: "7.51px",
-          transform: isSelected ? "scale(1.05)" : "scale(1)",
+          transform: isSelected ? "scale(1.15) rotate(10deg)" : "scale(1)",
         }}
       >
         <Image
@@ -84,13 +86,16 @@ function CategoryCard({
           alt={category.name}
           width={105.98}
           height={105.98}
+          className="lg:w-[140px] lg:h-[140px]"
         />
       </div>
 
-      {/* Category Name */}
       <p
-        className="text-white text-center text-label-md"
-        style={{ marginTop: "-30px" }}
+        className="text-white text-center text-label-md lg:text-lg"
+        style={{
+          marginTop:
+            category.name?.toLowerCase() === "fuel" ? "-10px" : "-25px",
+        }}
       >
         {category.name}
       </p>
@@ -99,7 +104,10 @@ function CategoryCard({
 }
 
 export default function Home() {
+  const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [showToast, setShowToast] = useState(false);
+  const { setSelectedCategories: setStoreCategories } = useSpendingStore();
 
   const toggleCategory = (categoryId: string) => {
     setSelectedCategories((prev) =>
@@ -109,57 +117,127 @@ export default function Home() {
     );
   };
 
+  const handleAddSpends = () => {
+    if (selectedCategories.length === 0) {
+      setShowToast(true);
+      return;
+    }
+    setStoreCategories(selectedCategories);
+    router.push("/spends");
+  };
+
   return (
     <>
       <Head>
         <title>BankKaro - Find Your Best Credit Card</title>
       </Head>
       <div
-        className="min-h-screen pt-16 px-8 pb-40"
+        className="min-h-screen pt-16 px-8 pb-40 lg:pb-16"
         style={{
           background: "linear-gradient(180deg, #242C3B 0%, #3A3F49 100%)",
         }}
       >
-        <h1 className="text-white text-center mb-8 text-heading-lg">
-          Find your best Credit card
-        </h1>
+        <div className="max-w-7xl mx-auto lg:flex lg:gap-30 lg:items-center lg:justify-center">
+          <div className="lg:max-w-2xl lg:flex lg:flex-col lg:justify-center">
+            {/* Logo and Brand */}
+            <div className="flex items-center justify-center lg:justify-start mb-4">
+              <Image
+                src="/card.svg"
+                alt="CardGenius"
+                width={24}
+                height={24}
+                className="mr-2"
+              />
+              <span className="text-brand-name text-white">CardGenius</span>
+              <span
+                className="text-caption-xs ml-1"
+                style={{ color: "#FFFFFFCC" }}
+              >
+                by BankKaro
+              </span>
+            </div>
 
-        <div className="flex justify-center">
-          <Image
-            src="/card.png"
-            alt="Credit card"
-            width={400}
-            height={250}
-            priority
-          />
+            <h1 className="text-white text-center mb-8 text-heading-lg lg:text-left">
+              Find your best Credit card
+            </h1>
+
+            <div className="flex justify-center lg:justify-start lg:-ml-32">
+              <Image
+                src="/card.png"
+                alt="Credit card"
+                width={400}
+                height={250}
+                className="lg:w-[550px] lg:h-[344px]"
+                priority
+              />
+            </div>
+
+            <p className="text-white text-center mt-6 mb-8 text-body-sm lg:hidden">
+              Choose one or more categories where you spend the most
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 mb-8 lg:hidden">
+              {categories.map((category) => (
+                <CategoryCard
+                  key={category.id}
+                  category={category}
+                  isSelected={selectedCategories.includes(category.id)}
+                  onToggle={() => toggleCategory(category.id)}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="hidden lg:flex lg:flex-col lg:w-96 lg:items-center lg:justify-center">
+            <p className="text-white text-center mb-6 text-body-sm">
+              Choose one or more categories where you spend the most
+            </p>
+
+            <div className="grid grid-cols-2 gap-4 mb-8 w-full">
+              {categories.map((category) => (
+                <CategoryCard
+                  key={category.id}
+                  category={category}
+                  isSelected={selectedCategories.includes(category.id)}
+                  onToggle={() => toggleCategory(category.id)}
+                />
+              ))}
+            </div>
+
+            <Button fullWidth onClick={handleAddSpends}>
+              Add Spends
+            </Button>
+
+            <p
+              className="text-center mt-4 text-caption-xs"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6))",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Select at least one category to continue
+            </p>
+          </div>
         </div>
 
-        <p className="text-white text-center mt-6 mb-8 text-body-sm">
-          Choose one or more categories where you spend the most
-        </p>
-
-        {/* Category Cards */}
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {categories.map((category) => (
-            <CategoryCard
-              key={category.id}
-              category={category}
-              isSelected={selectedCategories.includes(category.id)}
-              onToggle={() => toggleCategory(category.id)}
-            />
-          ))}
-        </div>
-
-        {/* Add Spends Button - Fixed at Bottom */}
-        <div className="fixed bottom-0 left-0 right-0 max-w-4xl mx-auto px-4 py-4" style={{ background: "linear-gradient(180deg, transparent 0%, #3A3F49 40%)" }}>
-          <Button fullWidth>
+        <div
+          className="lg:hidden fixed bottom-0 left-0 right-0 px-4 py-4"
+          style={{
+            background: "linear-gradient(180deg, transparent 0%, #3A3F49 40%)",
+          }}
+        >
+          <Button fullWidth onClick={handleAddSpends}>
             Add Spends
           </Button>
 
           <p
             className="text-center mt-4 text-caption-xs"
             style={{
-              background: "rgba(255, 255, 255, 0.6)",
+              backgroundImage:
+                "linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6))",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -168,6 +246,12 @@ export default function Home() {
             Select at least one category to continue
           </p>
         </div>
+
+        <Toast
+          message="Please select at least one to proceed"
+          isVisible={showToast}
+          onClose={() => setShowToast(false)}
+        />
       </div>
     </>
   );

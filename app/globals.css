@@ -349,6 +349,14 @@ body {
   letter-spacing: -0.004em;
 }
 
+/* Brand Typography */
+.text-brand-name {
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0%;
+}
+
 /* Hide scrollbar for carousel */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

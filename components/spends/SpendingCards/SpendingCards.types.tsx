@@ -18,6 +18,7 @@ export interface SpendingCategoriesConfig {
 
 export interface SpendingCategoryCardProps {
   category: SpendingCategory;
+  initialAmount?: number;
   onAmountChange?: (amount: number) => void;
 }
 
@@ -26,4 +27,5 @@ export interface SpendingCategoriesProps {
   onCategoryChange?: (categories: string[]) => void;
   onTotalChange?: (total: number) => void;
   onCategorySpendsChange?: (categorySpends: { [key: string]: number }) => void;
+  filterCategories?: string[];
 }

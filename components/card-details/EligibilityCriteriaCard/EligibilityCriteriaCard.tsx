@@ -10,7 +10,6 @@ import { eligibilityData } from "./EligibilityCriteriaCard.data";
 const CriterionItem: React.FC<CriterionItemProps> = ({ criterion }) => {
   return (
     <div className="flex items-start gap-4" style={{ padding: "12px 16px" }}>
-      {/* Checkmark Circle */}
       <div
         className="flex-shrink-0 rounded-full flex items-center justify-center"
         style={{
@@ -22,9 +21,10 @@ const CriterionItem: React.FC<CriterionItemProps> = ({ criterion }) => {
         <Image src="/check.svg" alt="Check" width={16} height={16} />
       </div>
 
-      {/* Content */}
       <div className="flex-1">
-        <h3 className="text-white text-eligibility-value">{criterion.value}</h3>
+        <h3 className="text-white text-eligibility-value mb-1">
+          {criterion.value}
+        </h3>
         <p className="text-eligibility-label" style={{ color: "#999999" }}>
           {criterion.label}
         </p>
@@ -44,7 +44,6 @@ const EligibilityCriteriaCard: React.FC<EligibilityCriteriaCardProps> = ({
         className="relative rounded-2xl"
         style={{ boxShadow: "1px 8px 10px 0px #0000001F" }}
       >
-        {/* Gradient border layer */}
         <div
           className="absolute inset-0 rounded-2xl pointer-events-none"
           style={{
@@ -58,7 +57,6 @@ const EligibilityCriteriaCard: React.FC<EligibilityCriteriaCardProps> = ({
           }}
         />
 
-        {/* Content with background */}
         <div
           className="relative rounded-2xl"
           style={{
@@ -66,7 +64,6 @@ const EligibilityCriteriaCard: React.FC<EligibilityCriteriaCardProps> = ({
               "linear-gradient(169.98deg, #353F54 27.98%, #222834 81.2%)",
           }}
         >
-          {/* Header */}
           <h2
             className="text-white text-eligibility-heading"
             style={{ padding: "14px 16px" }}
@@ -74,10 +71,8 @@ const EligibilityCriteriaCard: React.FC<EligibilityCriteriaCardProps> = ({
             {data.heading}
           </h2>
 
-          {/* Divider Line */}
           <div style={{ borderTop: "0.5px solid #FFFFFF1A" }} />
 
-          {/* Criteria List */}
           <div>
             {data.criteria.map((criterion, index) => (
               <React.Fragment key={criterion.id}>

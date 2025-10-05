@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import type {
   SpendingCategoryCardProps,
   SpendingCategoriesProps,
 } from "./SpendingCards.types";
 import { spendingData, iconMap } from "./SpendingCards.data";
+import { useSpendingStore } from "@/store/spendingStore";
 
 const ChevronDownIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg
@@ -30,9 +31,17 @@ const ChevronDownIcon: React.FC<{ className?: string }> = ({ className }) => (
 const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
   category,
   onAmountChange,
+  initialAmount,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [amount, setAmount] = useState(category.currentAmount);
+  const [amount, setAmount] = useState(initialAmount ?? category.currentAmount);
+
+  // Update amount when initialAmount changes
+  useEffect(() => {
+    if (initialAmount !== undefined && initialAmount !== amount) {
+      setAmount(initialAmount);
+    }
+  }, [initialAmount]);
 
   const iconPath =
     iconMap[category.icon as keyof typeof iconMap] || iconMap.shopping;
@@ -62,7 +71,6 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
         boxShadow: "1px 8px 10px 0px #0000001F",
       }}
     >
-      {/* Gradient Border - using mask technique for better browser support */}
       <div
         className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
         style={{
@@ -76,7 +84,6 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
         }}
       />
 
-      {/* Header */}
       <div className="flex items-center justify-between mb-6 sm:mb-8">
         <div className="flex items-center gap-3 sm:gap-4">
           <div
@@ -99,7 +106,6 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
         </div>
       </div>
 
-      {/* Slider */}
       <div className="mb-6 sm:mb-8 px-1">
         <div
           className="relative h-2 rounded-full"
@@ -161,7 +167,6 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
         </div>
       </div>
 
-      {/* Quick Increment Buttons and Expand */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex gap-2 sm:gap-3">
           {category.quickIncrements.map((increment) => (
@@ -198,7 +203,6 @@ const SpendingCategoryCard: React.FC<SpendingCategoryCardProps> = ({
         </div>
       </div>
 
-      {/* Expanded Content */}
       <div
         className={`overflow-hidden transition-all duration-300 ${
           isExpanded ? "max-h-40 opacity-100 mt-6" : "max-h-0 opacity-0"
@@ -242,13 +246,25 @@ const SpendingCards: React.FC<SpendingCategoriesProps> = ({
   onCategoryChange,
   onTotalChange,
   onCategorySpendsChange,
+  filterCategories = [],
 }) => {
-  const [amounts, setAmounts] = React.useState<{ [key: string]: number }>(
-    data.categories.reduce(
+  const { categorySpends: storeCategorySpends } = useSpendingStore();
+
+  const [amounts, setAmounts] = React.useState<{ [key: string]: number }>(() => {
+    // Initialize from store if available, otherwise use default
+    if (storeCategorySpends && Object.keys(storeCategorySpends).length > 0) {
+      return storeCategorySpends;
+    }
+    return data.categories.reduce(
       (acc, cat) => ({ ...acc, [cat.id]: cat.currentAmount }),
       {}
-    )
-  );
+    );
+  });
+
+  // Filter categories based on filterCategories prop
+  const categoriesToShow = filterCategories.length > 0
+    ? data.categories.filter((cat) => filterCategories.includes(cat.id))
+    : data.categories;
 
   React.useEffect(() => {
     // Calculate total and notify parent
@@ -271,10 +287,11 @@ const SpendingCards: React.FC<SpendingCategoriesProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4 sm:space-y-6">
-      {data.categories.map((category) => (
+      {categoriesToShow.map((category) => (
         <SpendingCategoryCard
           key={category.id}
           category={category}
+          initialAmount={amounts[category.id]}
           onAmountChange={(amount) => handleAmountChange(category.id, amount)}
         />
       ))}

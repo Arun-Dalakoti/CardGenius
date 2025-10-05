@@ -18,6 +18,13 @@ export const savingsConfig: SavingsData = {
       percentage: 5,
     },
     {
+      id: "food",
+      name: "Food",
+      spent: 11250,
+      saved: 6250,
+      percentage: 5,
+    },
+    {
       id: "fuel",
       name: "Fuel",
       spent: 11250,

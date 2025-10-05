@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useSpendingStore } from "@/store/spendingStore";
 import type {
   SavingsCategory,
   SavingsBreakdownConfig,
@@ -13,6 +14,7 @@ import type {
 const iconMap = {
   travel: "/spends/airplane.svg",
   shopping: "/spends/bag.svg",
+  food: "/fork.svg",
   fuel: "/spends/fuel.svg",
 };
 
@@ -23,7 +25,6 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
 
   return (
     <div className="flex items-center justify-between py-4">
-      {/* Left Side - Icon and Name */}
       <div className="flex items-center gap-3 flex-1">
         <div
           className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
@@ -42,7 +43,6 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ category, currency }) => {
         </div>
       </div>
 
-      {/* Right Side - Savings */}
       <div className="text-right ml-4">
         <div className="text-white mb-1 text-breakdown-saved">
           + {currency}
@@ -65,31 +65,49 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const currency = "₹";
+  const { selectedCard, setCategorySavings, setTotalSavings } =
+    useSpendingStore();
+
+  // Use selected card's cashback rate, fallback to avgCashback
+  const cashbackRate = selectedCard?.cashback || avgCashback;
 
   // Calculate dynamic savings breakdown
-  const categories: SavingsCategory[] = Object.entries(categorySpends)
-    .filter(([, amount]) => amount > 0)
-    .map(([id, spent]) => {
-      const categoryName = id.charAt(0).toUpperCase() + id.slice(1);
-      const saved = Math.round((spent * avgCashback) / 100);
-      return {
-        id,
-        icon: id,
-        name: categoryName,
-        spent,
-        saved,
-        percentage: Number(avgCashback.toFixed(2)),
-      };
-    });
+  const categories: SavingsCategory[] = React.useMemo(
+    () =>
+      Object.entries(categorySpends)
+        .filter(([, amount]) => amount > 0)
+        .map(([id, spent]) => {
+          const categoryName = id.charAt(0).toUpperCase() + id.slice(1);
+          const saved = Math.round((spent * cashbackRate) / 100);
+          return {
+            id,
+            icon: id,
+            name: categoryName,
+            spent,
+            saved,
+            percentage: Number(cashbackRate.toFixed(2)),
+          };
+        }),
+    [categorySpends, cashbackRate]
+  );
 
-  const totalSavings = Math.round((totalSpends * avgCashback) / 100);
+  const totalSavings = React.useMemo(
+    () => Math.round((totalSpends * cashbackRate) / 100),
+    [totalSpends, cashbackRate]
+  );
+
+  // Store the calculated savings in the store
+  React.useEffect(() => {
+    setCategorySavings(categories);
+    setTotalSavings(totalSavings);
+  }, [categories, totalSavings]);
 
   const data: SavingsBreakdownConfig = {
     heading: "Savings breakdown",
     categories,
     totalSpent: totalSpends,
     totalSavings,
-    averagePercentage: Number(avgCashback.toFixed(2)),
+    averagePercentage: Number(cashbackRate.toFixed(2)),
     currency,
   };
 
@@ -112,12 +130,11 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
           boxShadow: "1px 8px 10px 0px #0000001F",
         }}
       >
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-white text-breakdown-heading">{data.heading}</h2>
           <div
             onClick={handleExpand}
-            className="transition-colors text-expand-link underline"
+            className="transition-colors text-expand-link underline cursor-pointer"
             style={{
               textDecorationStyle: "dotted",
               color: "#999999",
@@ -127,7 +144,6 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
           </div>
         </div>
 
-        {/* Categories */}
         <div className="mb-6 space-y-4">
           {data.categories.map((category, index) => (
             <React.Fragment key={category.id}>
@@ -139,7 +155,6 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
           ))}
         </div>
 
-        {/* Total Savings */}
         <div className="flex items-center justify-between pt-6 border-t border-white/10">
           <div className="flex-1">
             <h3 className="text-white mb-1 text-breakdown-category">
@@ -158,7 +173,10 @@ const SavingsBreakdownCard: React.FC<SavingsBreakdownCardProps> = ({
               {currency}
               {data.totalSavings.toLocaleString("en-IN")}
             </div>
-            <div className="text-breakdown-percentage" style={{ color: "#999999" }}>
+            <div
+              className="text-breakdown-percentage"
+              style={{ color: "#999999" }}
+            >
               {data.averagePercentage}% avg
             </div>
           </div>

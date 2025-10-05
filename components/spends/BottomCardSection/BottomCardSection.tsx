@@ -7,6 +7,7 @@ import SavingsBreakdownCard from "../SpendingBreakdown";
 import Button from "@/components/ui/Button";
 import type { BottomCardSectionProps } from "./BottomCardSection.types";
 import { creditCards } from "./BottomCardSection.data";
+import { useSpendingStore } from "@/store/spendingStore";
 
 const BottomCardSection: React.FC<BottomCardSectionProps> = ({
   selectedCategories,
@@ -21,6 +22,8 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
   const [windowHeight, setWindowHeight] = useState(0);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const { setSelectedCard } = useSpendingStore();
+  const lastSetCardIndexRef = useRef<number>(-1);
 
   useEffect(() => {
     setWindowHeight(window.innerHeight);
@@ -85,10 +88,34 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
     }
   };
 
+  // Update selected card whenever carousel index changes
+  useEffect(() => {
+    if (lastSetCardIndexRef.current !== currentCardIndex && recommendedCards.length > 0) {
+      const currentCard = recommendedCards[currentCardIndex];
+      if (currentCard) {
+        setSelectedCard({
+          name: currentCard.name,
+          bank: currentCard.bank,
+          cashback: currentCard.cashback,
+          annualFee: currentCard.annualFee,
+          joiningBonus: currentCard.joiningBonus,
+          rating: currentCard.rating || 4.5,
+          reviews: currentCard.reviews || 2847,
+          rewardPoints: currentCard.rewardPoints || "4X",
+        });
+        lastSetCardIndexRef.current = currentCardIndex;
+      }
+    }
+  }, [currentCardIndex]);
+
+  const handleApplyCard = () => {
+    router.push("/card-detail");
+  };
+
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-0 left-0 right-0 z-40"
+      className="lg:static lg:h-auto lg:bg-transparent fixed bottom-0 left-0 right-0 z-40"
       style={{
         height: `${height}px`,
         background: "linear-gradient(180deg, #2A3441 0%, #1F2630 100%)",
@@ -100,37 +127,44 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Swipe Bar with Total Spends */}
+      {/* Total Spends Section */}
       <div
-        className="flex flex-col py-3 cursor-pointer px-4"
-        onClick={handleClick}
+        className="lg:p-6 lg:rounded-2xl lg:mb-4"
+        style={{
+          background: "linear-gradient(180deg, #2A3441 0%, #1F2630 100%)",
+        }}
       >
-        <div className="flex justify-center mb-3">
-          <div
-            className="w-12 h-1 rounded-full"
-            style={{ background: "#FFFFFF40" }}
-          />
-        </div>
+        <div
+          className="flex flex-col py-3 cursor-pointer px-4 lg:cursor-default lg:p-0"
+          onClick={handleClick}
+        >
+          <div className="flex justify-center mb-3 lg:hidden">
+            <div
+              className="w-12 h-1 rounded-full"
+              style={{ background: "#FFFFFF40" }}
+            />
+          </div>
 
-        {/* Total Spends */}
-        <div className="flex items-center justify-between">
-          <h3 className="text-white text-total-spends">Total spends</h3>
-          <p className="text-white text-total-amount">
-            ₹{totalSpends.toLocaleString("en-IN")}
-          </p>
+          <div className="flex items-center justify-between">
+            <h3 className="text-white text-total-spends">Total spends</h3>
+            <p className="text-white text-total-amount">
+              ₹{totalSpends.toLocaleString("en-IN")}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Content - Scrollable */}
-      <div className="overflow-y-auto" style={{ height: "calc(100% - 160px)" }}>
-        {/* Save Section with Card Carousel */}
+      <div
+        className="overflow-y-auto lg:overflow-y-visible lg:h-auto"
+        style={{ height: "calc(100% - 160px)" }}
+      >
         <div
-          className="-mx-4 w-screen pb-6"
+          className="-mx-4 lg:mx-0 w-screen lg:w-auto pb-6 lg:pb-0 lg:rounded-2xl lg:p-4"
           style={{
             background: "rgba(62, 101, 132, 1)",
           }}
         >
-          <div className="flex items-center justify-between px-4 pt-2">
+          <div className="flex items-center justify-between px-4 lg:px-0 pt-2 lg:pt-0">
             <p className="text-white text-save-monthly">
               Save monthly upto{" "}
               <span
@@ -147,16 +181,23 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
               alt="Arrow"
               width={24}
               height={24}
-              className="transform rotate-90 cursor-pointer"
+              className="lg:hidden transform rotate-90 cursor-pointer"
             />
           </div>
-          <p className="text-white/60 px-4 mb-3 text-body-sm">
+          <p className="text-white/60 px-4 lg:px-0 mb-3 text-body-sm">
             {recommendedCards.length} recommended cards
           </p>
 
-          {/* Card Carousel */}
+          {recommendedCards.length > 0 && (
+            <div className="hidden lg:block mb-4">
+              <Button fullWidth onClick={handleApplyCard}>
+                Apply for {recommendedCards[currentCardIndex]?.name || "Card"}
+              </Button>
+            </div>
+          )}
+
           {recommendedCards.length > 0 ? (
-            <div className="relative px-4">
+            <div className="relative px-4 lg:px-0">
               <div
                 ref={carouselRef}
                 className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
@@ -174,7 +215,6 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
                     className="flex-shrink-0 snap-center"
                     style={{ width: "calc(100% - 32px)" }}
                   >
-                    {/* Card Image */}
                     <div className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-6 h-48 flex flex-col justify-between mb-3">
                       <div>
                         <p className="text-white/80 text-sm">{card.bank}</p>
@@ -198,32 +238,69 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
                       </div>
                     </div>
 
-                    {/* Card Details */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex-1">
                         <h4 className="text-white mb-1 text-card-name">
                           {card.name}
                         </h4>
                         <div className="flex items-center gap-2">
-                          <span className="text-white text-rating">4.5</span>
+                          <span className="text-white text-rating">{card.rating || 4.5}</span>
                           <div className="flex items-center gap-0.5">
-                            {[...Array(5)].map((_, i) => (
-                              <svg
-                                key={i}
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="#FFB800"
-                              >
-                                <path d="M8 1L10.163 5.38L15 6.12L11.5 9.54L12.326 14.36L8 12.1L3.674 14.36L4.5 9.54L1 6.12L5.837 5.38L8 1Z" />
-                              </svg>
-                            ))}
+                            {[...Array(5)].map((_, i) => {
+                              const rating = card.rating || 4.5;
+                              const isFilled = i < Math.floor(rating);
+                              const isHalfFilled = i === Math.floor(rating) && rating % 1 !== 0;
+                              const isEmpty = i >= Math.ceil(rating);
+
+                              if (isHalfFilled) {
+                                return (
+                                  <svg
+                                    key={i}
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                  >
+                                    <defs>
+                                      <linearGradient id={`half-star-${i}`}>
+                                        <stop offset="50%" stopColor="#FFB800" />
+                                        <stop offset="50%" stopColor="transparent" />
+                                      </linearGradient>
+                                    </defs>
+                                    <path
+                                      d="M10 1.25L12.704 6.77L18.75 7.65L14.375 11.925L15.408 17.95L10 15.125L4.592 17.95L5.625 11.925L1.25 7.65L7.296 6.77L10 1.25Z"
+                                      fill={`url(#half-star-${i})`}
+                                    />
+                                    <path
+                                      d="M10 1.25L12.704 6.77L18.75 7.65L14.375 11.925L15.408 17.95L10 15.125L4.592 17.95L5.625 11.925L1.25 7.65L7.296 6.77L10 1.25Z"
+                                      stroke="#FFB800"
+                                      strokeWidth="1.5"
+                                      fill="none"
+                                    />
+                                  </svg>
+                                );
+                              }
+
+                              return (
+                                <svg
+                                  key={i}
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 20 20"
+                                  fill={isFilled ? "#FFB800" : "none"}
+                                  stroke={isEmpty ? "#FFFFFF" : "#FFB800"}
+                                  strokeWidth="1.5"
+                                >
+                                  <path d="M10 1.25L12.704 6.77L18.75 7.65L14.375 11.925L15.408 17.95L10 15.125L4.592 17.95L5.625 11.925L1.25 7.65L7.296 6.77L10 1.25Z" />
+                                </svg>
+                              );
+                            })}
                           </div>
                           <span
                             className="text-reviews"
                             style={{ color: "#999999" }}
                           >
-                            (2,847 reviews)
+                            ({(card.reviews || 2847).toLocaleString("en-IN")} reviews)
                           </span>
                         </div>
                       </div>
@@ -249,27 +326,32 @@ const BottomCardSection: React.FC<BottomCardSectionProps> = ({
           )}
         </div>
 
-        {/* Savings Breakdown Card */}
         {recommendedCards.length > 0 && (
-          <div className="px-4">
-            <SavingsBreakdownCard
-              totalSpends={totalSpends}
-              avgCashback={avgCashback}
-              categorySpends={categorySpends}
-            />
+          <div className="px-4 lg:px-0 lg:mt-4">
+            <div
+              className="lg:p-6 lg:rounded-2xl"
+              style={{
+                background: "linear-gradient(180deg, #2A3441 0%, #1F2630 100%)",
+              }}
+            >
+              <SavingsBreakdownCard
+                totalSpends={totalSpends}
+                avgCashback={avgCashback}
+                categorySpends={categorySpends}
+              />
+            </div>
           </div>
         )}
       </div>
 
-      {/* Apply Button - Fixed at Bottom */}
       {recommendedCards.length > 0 && (
         <div
-          className="absolute bottom-0 left-0 right-0 px-4 py-4"
+          className="absolute lg:hidden bottom-0 left-0 right-0 px-4 py-4"
           style={{
             background: "linear-gradient(180deg, transparent 0%, #1F2630 40%)",
           }}
         >
-          <Button fullWidth onClick={() => router.push("/card-detail")}>
+          <Button fullWidth onClick={handleApplyCard}>
             Apply for {recommendedCards[currentCardIndex]?.name || "Card"}
           </Button>
         </div>

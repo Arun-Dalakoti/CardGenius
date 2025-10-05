@@ -17,7 +17,6 @@ const FeatureItem: React.FC<FeatureItemProps> = ({ feature }) => {
 
   return (
     <div className="flex items-start gap-4" style={{ padding: "12px 16px" }}>
-      {/* Icon Circle */}
       <div
         className="flex-shrink-0 rounded-full flex items-center justify-center"
         style={{
@@ -29,9 +28,10 @@ const FeatureItem: React.FC<FeatureItemProps> = ({ feature }) => {
         <Image src={iconPath} alt={feature.title} width={16} height={16} />
       </div>
 
-      {/* Content */}
       <div className="flex-1">
-        <h3 className="text-white text-eligibility-value">{feature.title}</h3>
+        <h3 className="text-white text-eligibility-value mb-1">
+          {feature.title}
+        </h3>
         <p className="text-eligibility-label" style={{ color: "#999999" }}>
           {feature.description}
         </p>
@@ -51,7 +51,6 @@ const KeyFeaturesCard: React.FC<KeyFeaturesCardProps> = ({
         className="relative rounded-2xl"
         style={{ boxShadow: "1px 8px 10px 0px rgba(0, 0, 0, 0.12)" }}
       >
-        {/* Gradient border layer */}
         <div
           className="absolute inset-0 rounded-2xl pointer-events-none"
           style={{
@@ -65,7 +64,6 @@ const KeyFeaturesCard: React.FC<KeyFeaturesCardProps> = ({
           }}
         />
 
-        {/* Content with background */}
         <div
           className="relative rounded-2xl"
           style={{
@@ -73,7 +71,6 @@ const KeyFeaturesCard: React.FC<KeyFeaturesCardProps> = ({
               "linear-gradient(169.98deg, #353F54 27.98%, #222834 81.2%)",
           }}
         >
-          {/* Header */}
           <h2
             className="text-white text-eligibility-heading"
             style={{ padding: "14px 16px" }}
@@ -81,10 +78,8 @@ const KeyFeaturesCard: React.FC<KeyFeaturesCardProps> = ({
             {data.heading}
           </h2>
 
-          {/* Divider Line */}
           <div style={{ borderTop: "0.5px solid #FFFFFF1A" }} />
 
-          {/* Features List */}
           <div>
             {data.features.map((feature, index) => (
               <React.Fragment key={feature.id}>
