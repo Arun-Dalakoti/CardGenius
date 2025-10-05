@@ -200,4 +200,4 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({
   );
 };
 
-export default CategoryCard;
+export default CategorySelection;
