@@ -225,7 +225,7 @@ const MobileCardDetails: React.FC<MobileCardDetailsProps> = ({
 
         {/* Savings Breakdown */}
         <div
-          className="mx-4 mb-4 rounded-2xl overflow-y-auto scrollbar-hide"
+          className="mx-4 mb-4 rounded-2xl"
           style={{
             background: "rgba(255, 255, 255, 0.05)",
             maxHeight: "500px",

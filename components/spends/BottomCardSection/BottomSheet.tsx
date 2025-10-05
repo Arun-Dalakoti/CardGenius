@@ -30,6 +30,19 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   const maxHeight = windowHeight * 0.98;
   const minHeight = 230;
 
+  // Prevent body scroll when bottom sheet is expanded
+  useEffect(() => {
+    if (height > minHeight + 50) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [height, minHeight]);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     setStartY(e.touches[0].clientY);
     setIsDragging(true);
@@ -106,7 +119,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       </div>
 
       <div
-        className="overflow-hidden"
+        className="overflow-y-auto scrollbar-hide"
         style={{ height: height === minHeight ? "auto" : "calc(100% - 160px)" }}
       >
         {/* Collapsed state preview */}

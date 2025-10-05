@@ -224,7 +224,7 @@ export default function Home() {
         </div>
 
         <div
-          className="lg:hidden fixed bottom-0 left-0 right-0 px-4 py-4"
+          className="lg:hidden fixed bottom-0 left-0 right-0 px-4 py-4 z-50"
           style={{
             background: "linear-gradient(180deg, transparent 0%, #3A3F49 40%)",
           }}
