@@ -24,6 +24,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   const [windowHeight, setWindowHeight] = useState(0);
   const [startTime, setStartTime] = useState(0);
   const [currentY, setCurrentY] = useState(0);
+  const scrollableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setWindowHeight(window.innerHeight);
@@ -45,7 +46,20 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     };
   }, [height, minHeight]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = (e: React.TouchEvent, isHeader: boolean = false) => {
+    // If touching scrollable content area when expanded, don't start dragging
+    if (!isHeader && height > minHeight) {
+      const scrollableEl = scrollableRef.current;
+      if (scrollableEl) {
+        // Check if the target is within the scrollable content
+        const target = e.target as HTMLElement;
+        if (scrollableEl.contains(target)) {
+          // Don't initiate drag on scrollable content
+          return;
+        }
+      }
+    }
+
     const touchY = e.touches[0].clientY;
     setStartY(touchY);
     setCurrentY(touchY);
@@ -55,6 +69,25 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return;
+
+    // If we're scrolling content, don't drag the sheet
+    const scrollableEl = scrollableRef.current;
+    if (scrollableEl && height > minHeight) {
+      const scrollTop = scrollableEl.scrollTop;
+      const touchY = e.touches[0].clientY;
+      const deltaY = startY - touchY;
+
+      // If scrolling down and content is scrolled, let it scroll instead of dragging
+      if (deltaY < 0 && scrollTop > 0) {
+        return;
+      }
+
+      // If scrolling up and not at the top, let it scroll
+      if (deltaY > 0 && scrollTop > 0) {
+        return;
+      }
+    }
+
     const touchY = e.touches[0].clientY;
     const deltaY = currentY - touchY;
     const newHeight = Math.min(Math.max(height + deltaY, minHeight), maxHeight);
@@ -63,6 +96,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDragging) return;
     setIsDragging(false);
 
     const endY = e.changedTouches[0].clientY;
@@ -131,6 +165,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       <div
         className="flex flex-col py-3 cursor-pointer px-4"
         onClick={handleClick}
+        onTouchStart={(e) => handleTouchStart(e, true)}
       >
         <div className="flex justify-center mb-3">
           <div
@@ -148,6 +183,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       </div>
 
       <div
+        ref={scrollableRef}
         className="overflow-y-auto scrollbar-hide"
         style={{ height: height === minHeight ? "auto" : "calc(100% - 160px)" }}
       >
